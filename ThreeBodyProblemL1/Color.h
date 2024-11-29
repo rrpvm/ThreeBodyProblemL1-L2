@@ -1,0 +1,26 @@
+#pragma once
+using USHORT = unsigned short int;
+class Color {
+private:
+	USHORT alpha, red, green, blue;
+public:
+	Color(USHORT a, USHORT r, USHORT g, USHORT b) {
+		this->alpha = a;
+		this->red = r;
+		this->green = g;
+		this->blue = b;
+	}
+	Color(const Color& c) {
+		this->alpha = c.alpha;
+		this->red = c.red;
+		this->green = c.green;
+		this->blue = c.blue;
+	}
+	unsigned long getValue() {
+		return ((alpha << 0) | (red << 8) | (green << 16) | (blue << 24));
+	}
+	unsigned long toRGB() {
+		return ((red) | (green << 8) | (blue << 16));
+	}
+
+};

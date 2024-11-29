@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков\render">
+      <UniqueIdentifier>{5ca2b3d9-50cf-4832-b945-a616b35a8aba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\render">
+      <UniqueIdentifier>{7a95c41c-eb91-42ac-8d50-c3d21b5f6dd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\gui">
+      <UniqueIdentifier>{013f3e64-779a-4c73-9294-0df6f14ebf99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\gui">
+      <UniqueIdentifier>{c1e10c36-f98f-4041-9d9e-904990479c63}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ThreeBodyProblemL1.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="WinGdiRender.cpp">
+      <Filter>Исходные файлы\render</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Исходные файлы\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseView.cpp">
+      <Filter>Исходные файлы\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearLayout.cpp">
+      <Filter>Исходные файлы\gui</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="IRender.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundRect.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="WinGdiRender.hpp">
+      <Filter>Файлы заголовков\render</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseView.h">
+      <Filter>Файлы заголовков\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="ParentView.hpp">
+      <Filter>Файлы заголовков\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearLayout.hpp">
+      <Filter>Файлы заголовков\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.hpp">
+      <Filter>Файлы заголовков\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderable.h">
+      <Filter>Файлы заголовков\render</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
