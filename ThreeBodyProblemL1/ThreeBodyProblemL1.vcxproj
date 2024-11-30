@@ -129,19 +129,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseView.cpp" />
+    <ClCompile Include="CheckBoxView.cpp" />
     <ClCompile Include="LinearLayout.cpp" />
+    <ClCompile Include="SpacerView.cpp" />
     <ClCompile Include="ThreeBodyProblemL1.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WinGdiRender.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseView.h" />
+    <ClInclude Include="CheckBoxView.hpp" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="ICheckBox.hpp" />
     <ClInclude Include="IRender.h" />
+    <ClInclude Include="LayoutParameter.hpp" />
     <ClInclude Include="LinearLayout.hpp" />
     <ClInclude Include="ParentView.hpp" />
     <ClInclude Include="BoundRect.hpp" />
     <ClInclude Include="Renderable.h" />
+    <ClInclude Include="SpacerView.hpp" />
     <ClInclude Include="Vector2.hpp" />
     <ClInclude Include="Window.hpp" />
     <ClInclude Include="WinGdiRender.hpp" />

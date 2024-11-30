@@ -42,6 +42,12 @@
     <ClCompile Include="LinearLayout.cpp">
       <Filter>Исходные файлы\gui</Filter>
     </ClCompile>
+    <ClCompile Include="CheckBoxView.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="SpacerView.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IRender.h">
@@ -73,6 +79,18 @@
     </ClInclude>
     <ClInclude Include="Renderable.h">
       <Filter>Файлы заголовков\render</Filter>
+    </ClInclude>
+    <ClInclude Include="ICheckBox.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckBoxView.hpp">
+      <Filter>Файлы заголовков\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="SpacerView.hpp">
+      <Filter>Файлы заголовков\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="LayoutParameter.hpp">
+      <Filter>Файлы заголовков\gui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

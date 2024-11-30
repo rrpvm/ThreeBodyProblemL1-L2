@@ -27,6 +27,9 @@ public:
 	}
 	void setView(ParentView* mView);
 	virtual void draw(IRender* renderer);
+	const Vector2& getSize() {
+		return this->size;
+	}
 	~Window() {
 		
 	}

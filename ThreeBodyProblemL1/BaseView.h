@@ -1,7 +1,7 @@
 #pragma once
-#include "Windows.h"
-#include "Color.h"
+#include "LayoutParameter.hpp"
 #include "Renderable.h"	
+#include "Color.h"
 #include "BoundRect.hpp"
 #include <iostream>
 class Window;
@@ -10,53 +10,62 @@ enum class ViewSizeSpec {
 	WRAP_CONTENT,
 	HARD
 };
-class LayoutParameter {
-public:
-	const uintptr_t width;
-	const uintptr_t height;
-	LayoutParameter(uintptr_t _width, uintptr_t _height) :width(_width), height(_height) {
-		std::cout << _width << "\t" << _height << std::endl;
-	};
-	LayoutParameter(const LayoutParameter& param) :width(param.width), height(param.height) {};
-	
-};
+
+//onAttach->onMeasure->onLayout->onDraw();
+//requestLayout() отправляет цепь в onMeasure
+//invalidate() -> onDraw();
 class BaseView :IRenderable{
+protected:
+	BaseView* mParentView{ nullptr };
+protected:
+	Color* mBackgroundColor{ nullptr };
 protected:
 	ViewSizeSpec widthSize, heightSize;
 	LayoutParameter* mViewLayoutParams{new LayoutParameter(0,0)};
-	BoundRect mBounds = BoundRect(0,0,0,0);
-	BaseView* mParentView{ nullptr };
-	Color* mBackgroundColor{ nullptr };
 public:
-	BaseView(ViewSizeSpec _widthSize, ViewSizeSpec _heightSize) {
+	std::string debugId;
+	uintptr_t measuredWidth{ 0u }, measuredHeight{ 0u };
+	BaseView(const char* _debugId,	ViewSizeSpec _widthSize, ViewSizeSpec _heightSize) {
+		debugId = std::string(_debugId);
 		widthSize = _widthSize;
 		heightSize = _heightSize;
 	}
-	BaseView(uintptr_t width, uintptr_t height) {
+	BaseView(const char* _debugId, uintptr_t width, uintptr_t height) {
+		debugId = std::string(_debugId);
 		widthSize = ViewSizeSpec::HARD;
 		heightSize = ViewSizeSpec::HARD;
 		setMeasuredDimension(width, height);
 	}
-	BaseView(ViewSizeSpec _widthSize, uintptr_t height) {
+	BaseView(const char* _debugId, ViewSizeSpec _widthSize, uintptr_t height) {
+		debugId = std::string(_debugId);
 		widthSize =_widthSize;
 		heightSize = ViewSizeSpec::HARD;
 		setMeasuredDimension(0, height);
 	}
-	BaseView(uintptr_t width, ViewSizeSpec _heightSpec) {
+	BaseView(const char* _debugId, uintptr_t width, ViewSizeSpec _heightSpec) {
+		debugId = std::string(_debugId);
 		widthSize = ViewSizeSpec::HARD;
 		heightSize = _heightSpec;
 		setMeasuredDimension(width, 0);
 	}
-	void setBounds(BoundRect rc) {
-		this->mBounds = rc;
-	}
+	//render view
 	virtual void draw(IRender* renderer) = 0;
+	//callback when attach
 	virtual void onAttachedToWindow(Window*) = 0;
+	//callback  when measure. 
 	virtual void onMeasure() = 0;
+
+	virtual void measure(uintptr_t availW, uintptr_t availH) = 0;
+	//callback when layout view. only for parentview
 	virtual void onLayout() = 0;
-	void setBackgroundColor(Color* mColor);
+	
 	void requestLayout();
-	~BaseView() {
+	void onAttachedToView(BaseView* view) {
+		this->mParentView = view;
+	}
+public:
+	void setBackgroundColor(Color* mColor);//ui bg color
+	virtual ~BaseView() {
 
 	}
 protected:
@@ -64,6 +73,8 @@ protected:
 		if (mViewLayoutParams != nullptr) {
 			delete mViewLayoutParams;
 		}
+		this->measuredWidth = measuredWidth;
+		this->measuredHeight = measuredHeight;
 		this->mViewLayoutParams = new LayoutParameter(measuredWidth, measuredHeight);
 	}
 private:

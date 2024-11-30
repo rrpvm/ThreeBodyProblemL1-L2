@@ -17,6 +17,7 @@ public:
 	virtual void drawRect(Color& fColor, int x0, int y0, int xEnd, int yEnd, uintptr_t thickness = 1u)  override;
 	virtual void drawFilledRect(Color fColor, Vector2 origin, Vector2 size) override;
 	virtual void drawFilledRectWithOutline(Color fillColor, Color outlineColor, Vector2 origin, Vector2 size, uintptr_t thickness = 1u) override;
+	virtual void drawText(const std::string& text, LPRECT lpRect) override;
 private:
 	
 };

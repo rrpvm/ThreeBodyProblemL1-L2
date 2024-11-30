@@ -5,6 +5,10 @@
 #include "Color.h"
 #include "Window.hpp"
 #include "LinearLayout.hpp"
+#include <thread>
+#include <chrono>
+#include "CheckBoxView.hpp"
+#include "SpacerView.hpp"
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
     case WM_DESTROY:
@@ -17,6 +21,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
 }
+constexpr int waitTime = 1000 / 60;
+void scene1(Window* window);
 int WindowApplication(HINSTANCE hInstance, int nCmdShow) {
     const char* CLASS_NAME = "SampleWindowClass";
 
@@ -34,7 +40,7 @@ int WindowApplication(HINSTANCE hInstance, int nCmdShow) {
         CLASS_NAME,
         "My Window",
         WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+        CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720,
         NULL, NULL, hInstance, NULL
     );
 
@@ -44,20 +50,24 @@ int WindowApplication(HINSTANCE hInstance, int nCmdShow) {
 
     // Цикл обработки сообщений
     MSG msg = {};
-    HDC windowDeviceContext =  GetDC(hwnd);
+    HDC windowDeviceContext = GetDC(hwnd);
     IRender* renderer = new  WinGdiRender(windowDeviceContext);
-    Window solveWindow = Window(640,480,{255,255,255,255});
-    LinearLayout* mGuiRoot = new LinearLayout(LinearLayoutOrientation::VERTICAL,ViewSizeSpec::MATCH_PARENT,140);
-    mGuiRoot->setBackgroundColor(new Color(255, 0, 255, 0));
-    mGuiRoot->requestLayout();
-    solveWindow.setView(mGuiRoot);
-    renderer->drawWindow(solveWindow);
+    Window solveWindow = Window(1280, 720, { 255,255,255,255 });
+    scene1(&solveWindow);
     while (GetMessage(&msg, NULL, 0, 0)) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
+        renderer->drawWindow(solveWindow);
+        std::this_thread::sleep_for(std::chrono::milliseconds(waitTime));
     }
     delete renderer;
     return 0;
+}
+void scene1(Window* window) {
+    LinearLayout* mGuiRoot = new LinearLayout("mainRoot", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::MATCH_PARENT);
+    mGuiRoot->setBackgroundColor(new Color(255, 33, 33, 33));
+    window->setView(mGuiRoot);
+    mGuiRoot->addView(new SpacerView("spacerView", 0, 80));
 }
 
 int main()

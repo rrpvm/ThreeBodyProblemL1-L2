@@ -1,5 +1,5 @@
 #include "WinGdiRender.hpp"
-
+#include <string>
 void WinGdiRender::drawWindow( Window& mWindow)
 {
 	mWindow.draw(this);
@@ -33,6 +33,16 @@ void WinGdiRender::drawFilledRectWithOutline(Color fillColor, Color outlineColor
 {
 	drawFilledRect(fillColor, origin, size);
 	drawRect(outlineColor, origin, size,thickness);
+}
+
+void WinGdiRender::drawText(const std::string& text, LPRECT lpRect)
+{
+	SetTextColor(deviceContext, RGB(255, 0, 0));
+	SetBkMode(deviceContext, TRANSPARENT);
+	char* buffer = new char[text.length()];
+	std::memcpy(buffer, text.c_str(), text.size());
+	DrawTextEx(deviceContext, buffer, text.length(), lpRect, DT_CENTER, NULL);
+	delete[] buffer;
 }
 
 
