@@ -43,10 +43,10 @@
       <Filter>Исходные файлы\gui</Filter>
     </ClCompile>
     <ClCompile Include="CheckBoxView.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Исходные файлы\gui</Filter>
     </ClCompile>
     <ClCompile Include="SpacerView.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Исходные файлы\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

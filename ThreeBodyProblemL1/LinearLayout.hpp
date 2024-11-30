@@ -8,7 +8,6 @@ enum LinearLayoutOrientation {
 class LinearLayout : public ParentView {
 private:
 	LinearLayoutOrientation mOrientation{ VERTICAL };
-
 public:
 	LinearLayout(
 		const char* debugId,

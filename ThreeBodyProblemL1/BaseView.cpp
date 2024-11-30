@@ -7,9 +7,6 @@ void BaseView::setBackgroundColor(Color* mColor)
 
 void BaseView::requestLayout()
 {
-	measuredWidth = 0;
-	measuredHeight = 0;
-
 	onMeasure();
 	onLayout();
 }

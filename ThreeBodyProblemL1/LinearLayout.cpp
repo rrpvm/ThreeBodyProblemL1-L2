@@ -1,5 +1,6 @@
 #include "LinearLayout.hpp"
 #include "IRender.h"
+#include <math.h>
 void LinearLayout::addView(BaseView* mView)
 {
 	for (const auto& view : mViews) {
@@ -17,68 +18,98 @@ void LinearLayout::addView(BaseView* mView)
 }
 void LinearLayout::draw(IRender* renderer)
 {
-	/*if (mBackgroundColor != nullptr) {
-		renderer->drawFilledRect(*mBackgroundColor, this->mBounds.left, {(int)this->mViewLayoutParams->width,(int)this->mViewLayoutParams->height});
+	if (mBackgroundColor != nullptr) {
+		renderer->drawFilledRect(*mBackgroundColor, this->viewBound.left, {(int)this->mViewLayoutParams->width,(int)this->mViewLayoutParams->height});
 	}
 	for (const auto& view : mViews) {
 		if (view == nullptr)continue;
 		view->draw(renderer);
-	}*/
+	}
 }
 
 void LinearLayout::onAttachedToWindow(Window* mWindow)
 {
-	requestLayout();
+	attachedWindowSize = mWindow->getSize();
+	if (this->mParentView == nullptr) {
+		for (const auto& view : mViews) {
+			view->onAttachedToWindow(mWindow);
+		}
+		setBoundRect({ 0,0,attachedWindowSize.x,attachedWindowSize.y });
+		requestLayout();
+	
+	}
 }
 
 void LinearLayout::onMeasure()
 {
-	/*int measuredWidth = 0;
-	int measuredHeight = 0;
-	if (this->widthSize == ViewSizeSpec::MATCH_PARENT) {
-		measuredWidth = this->mBounds.right.x;
-	}
-	else if (this->widthSize == ViewSizeSpec::WRAP_CONTENT) {
-		measuredWidth = 250;
-	}
-	else {
-		measuredWidth = this->mViewLayoutParams->width;
-	}
-	if (this->heightSize == ViewSizeSpec::MATCH_PARENT) {
-		measuredHeight = this->mBounds.right.x;
-	}
-	else if (this->heightSize == ViewSizeSpec::WRAP_CONTENT) {
-		for (const auto& view : mViews) {
-			if (view == nullptr)continue;
-			view->setBounds(this->mBounds);
-			view->onMeasure();
-			measuredHeight += view->measuredHeight;
+	uintptr_t totalWidth = 0;
+	uintptr_t totalHeight = 0;
+	
+	uintptr_t parentWidthSpec = (widthSize == ViewSizeSpec::HARD) ? measuredWidth: attachedWindowSize.x;
+	uintptr_t parentHeightSpec = (heightSize == ViewSizeSpec::HARD) ? measuredHeight: attachedWindowSize.y;
+
+	//первый проход: грубое взешивание
+	for (const auto& child : mViews) {
+		
+		child->measure(parentWidthSpec, parentHeightSpec);
+
+		if (mOrientation == VERTICAL) {
+			totalHeight += child->measuredHeight; 
+			totalWidth = max(totalWidth, child->measuredWidth); 
+		}
+		else if (mOrientation == HORIZONTAL) {
+			totalWidth += child->measuredWidth;
+			totalHeight = max(totalHeight, child->measuredHeight);
 		}
 	}
-	else {
-		measuredHeight = this->mViewLayoutParams->height;
+	if (widthSize == ViewSizeSpec::WRAP_CONTENT) {
+		measuredWidth = totalWidth;
 	}
-	setMeasuredDimension(measuredWidth, measuredHeight);*/
+	if (heightSize == ViewSizeSpec::WRAP_CONTENT) {
+		measuredHeight = totalHeight;
+	}
+	//second iteration
+	uintptr_t resultWidth = 0u;
+	uintptr_t resultHeight = 0u;
+	for (const auto& child : mViews) {
+		uintptr_t childWidthSpec = (child->widthSize == ViewSizeSpec::MATCH_PARENT) ? parentWidthSpec : child->measuredWidth;
+		uintptr_t childHeightSpec = (child->heightSize == ViewSizeSpec::MATCH_PARENT) ? parentHeightSpec : child->measuredHeight;
+		child->measure(childWidthSpec, childHeightSpec);
+		resultWidth = (mOrientation == VERTICAL) ? max(resultWidth, child->measuredWidth) : resultWidth + child->measuredWidth;
+		resultHeight = (mOrientation == VERTICAL) ? resultHeight + child->measuredHeight : max(resultHeight, child->measuredHeight);
+	}
+	if (widthSize == ViewSizeSpec::MATCH_PARENT) {
+		resultWidth = parentWidthSpec;
+	}
+	if (heightSize == ViewSizeSpec::MATCH_PARENT) {
+		resultHeight = parentHeightSpec;
+	}
+	setMeasuredDimension(resultWidth, resultHeight);
 }
 
 void LinearLayout::measure(uintptr_t availW, uintptr_t availH)
 {
+	
+	onMeasure();
 }
 
 void LinearLayout::onLayout()
 {
-	/*int offsetY = 0;
-	BoundRect restRect = this->mBounds;
+	std::cout << "onLayout() \t " << (uintptr_t*)(this) << std::endl;
+	BoundRect tmpBound = BoundRect(viewBound.left.x, viewBound.left.y,viewBound.right.x,viewBound.right.y);
 	for (const auto& view : mViews) {
 		if (view == nullptr)continue;
-		int leftPosX = restRect.left.x;
-		int leftPosY = restRect.left.y + offsetY;
-		int rightPosX = measuredWidth;
-		int rightPosY = measuredHeight;
+		int leftPosX = tmpBound.left.x;
+		int leftPosY = tmpBound.left.y;
+		int rightPosX = min(leftPosX + view->measuredWidth, viewBound.right.x);
+		int rightPosY = min(leftPosY + view->measuredHeight, viewBound.right.y);
+		tmpBound.right.x = rightPosX;
+		tmpBound.right.y = rightPosY;
+		view->setBoundRect(tmpBound);
 		if (dynamic_cast<ParentView*>(view)) {
 			view->onLayout();
 		}
-		view->setBounds({ leftPosX,leftPosY,rightPosX ,rightPosY });
-		offsetY += view->measuredHeight;
-	}*/
+		tmpBound.left.x += 0;
+		tmpBound.left.y += view->measuredHeight;
+	}
 }
