@@ -59,7 +59,9 @@ int WindowApplication(HINSTANCE hInstance, int nCmdShow) {
     while (GetMessage(&msg, NULL, 0, 0)) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        if (msg.lParam != NULL) {
+
+        }else  std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     appState.applicationUniverse->stopSimulation();
   //  simulationWorker.join();
