@@ -13,9 +13,12 @@
 
 #define WND_NAME "Three body problem solve"
 ApplicationState appState = ApplicationState();
+std::unique_ptr<DefaultBody> theSun(new DefaultBody(9160000,Vector3D(0,0,0),Vector3D(0,0,0), appState.applicationUniverse->getCmd()));
+std::unique_ptr<DefaultBody> theEarth(new DefaultBody(800, appState.applicationUniverse->getCmd()));
+std::unique_ptr<DefaultBody> theMoon(new DefaultBody(200, appState.applicationUniverse->getCmd()));
 void scene1(Window* window);
 void onTBPCallback();
-std::thread threeBodyProblem();
+void threeBodyProblem();
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 int WindowApplication(HINSTANCE hInstance, int nCmdShow) {
@@ -53,7 +56,7 @@ int WindowApplication(HINSTANCE hInstance, int nCmdShow) {
     //  scene1(&solveWindow);
 
 
-   auto simulationWorker =  threeBodyProblem();
+   threeBodyProblem();
     while (GetMessage(&msg, NULL, 0, 0)) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
@@ -61,7 +64,7 @@ int WindowApplication(HINSTANCE hInstance, int nCmdShow) {
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
     appState.applicationUniverse->stopSimulation();
-    simulationWorker.join();
+  //  simulationWorker.join();
     return 0;
 }
 
@@ -88,7 +91,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         break;
     }
     case WM_PAINT: {
-        
         std::optional<std::vector<DefaultBody>> lastTick = appState.applicationUniverse->getCmd()->getPrevDataTick();
         if (lastTick.has_value()) {
             appState.renderer->clear();
@@ -123,12 +125,10 @@ void scene1(Window* window) {
 }
 void onTBPCallback() {
     //лишнее
- //   InvalidateRect(appState.windowHWND, NULL, TRUE);
+    InvalidateRect(appState.windowHWND, NULL, TRUE);
 };
-std::thread threeBodyProblem() {
-    std::unique_ptr<DefaultBody> theSun(new DefaultBody(9160000, appState.applicationUniverse->getCmd()));
-    std::unique_ptr<DefaultBody> theEarth(new DefaultBody(800, appState.applicationUniverse->getCmd()));
-    std::unique_ptr<DefaultBody> theMoon(new DefaultBody(200, appState.applicationUniverse->getCmd()));
+void threeBodyProblem() {
+   
     appState.applicationUniverse->setOnReadyFrameSimulation(onTBPCallback);
     appState.applicationUniverse->addBody(theEarth.get());
     appState.applicationUniverse->addBody(theSun.get());
@@ -137,5 +137,5 @@ std::thread threeBodyProblem() {
         appState.applicationUniverse->runSimulation();
         });
     simulationWorker.detach();
-    return simulationWorker;
+   
 }

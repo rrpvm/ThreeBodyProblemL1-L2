@@ -13,11 +13,18 @@ public:
 	void setScreenSize(const Vector2& screenDimension) {
 		this->screenSize = screenDimension;
 	}
+	int getScreenWidth() {
+		return screenSize.x;
+	}
+	int getScreenHeight() {
+		return screenSize.y;
+	}
 	void setBgColor(const Color& bgColor) {
 		this->bgColor = bgColor;
 	}
 	virtual void clear() = 0;
 	virtual void drawWindow(Window& mWindow) = 0;
+	virtual void drawFilledCircle(const Color& circleColor, const Vector2& origin, float radius)  =0;
 	virtual void drawRect(Color fColor,Vector2 origin,Vector2 size, uintptr_t thickness = 1u) = 0;
 	virtual void drawRect(Color& fColor, int x0, int y0, size_t width, size_t height, uintptr_t thickness = 1u) = 0;
 	virtual void drawRect(Color& fColor, int x0, int y0, int xEnd, int yEnd, uintptr_t thickness = 1u) = 0;

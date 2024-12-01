@@ -16,10 +16,10 @@ public:
 		this->green = c.green;
 		this->blue = c.blue;
 	}
-	unsigned long getValue() {
+	unsigned long getValue() const {
 		return ((alpha << 0) | (red << 8) | (green << 16) | (blue << 24));
 	}
-	unsigned long toRGB() {
+	unsigned long toRGB() const {
 		return ((red) | (green << 8) | (blue << 16));
 	}
 

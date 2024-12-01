@@ -10,7 +10,7 @@ private:
 	std::mutex lock;
 	std::vector<DefaultBody>* cachedCalculations;
 	int cachedCapacity;
-	UniverseCmd() :UniverseCmd(0.1, 6.67e-3) {}//disable default constr, only input-mode
+	UniverseCmd() :UniverseCmd(0.1, 6.67e-11) {}//disable default constr, only input-mode
 public:
 	const double deltaTime = 0.1;// action-interval s
 	const double uGravity;//university gravity cosnt
