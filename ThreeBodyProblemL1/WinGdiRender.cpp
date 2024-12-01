@@ -6,11 +6,14 @@
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
 #endif
-#define SEED_COUNT 1024.0f
+#define SEED_COUNT 128.0F
 void WinGdiRender::clear()
 {
 	static Vector2 origin{ 0,0 };
-	drawFilledRect(this->bgColor, origin, this->screenSize);
+	HBRUSH brush = CreateSolidBrush(bgColor.toRGB());
+	SelectObject(deviceContext, brush);
+	PatBlt(deviceContext, 0, 0, screenSize.x, screenSize.y, PATCOPY);
+	DeleteObject(brush);
 }
 void WinGdiRender::drawWindow( Window& mWindow)
 {
@@ -39,9 +42,8 @@ void WinGdiRender::drawFilledCircle(const Color& circleColor, const Vector2& ori
 	HBRUSH hBrush = CreateSolidBrush(circleColor.toRGB());
 	SelectObject(deviceContext, hBrush);
 	Polygon(deviceContext, points, SEED_COUNT);
+	DeleteObject(hBrush);
 	delete[] points;
-	
-
 }
 void WinGdiRender::drawRect(Color fColor, Vector2 origin, Vector2 size, uintptr_t thickness)
 {

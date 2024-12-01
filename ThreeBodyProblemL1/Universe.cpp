@@ -22,6 +22,7 @@ void Universe::runSimulation()
 		}
 		mCmd.update(mCmd.currentTick, mBodies);
 		this->mPreparedCallback();
+		std::this_thread::sleep_for(std::chrono::microseconds(100));
 	}
 }
 

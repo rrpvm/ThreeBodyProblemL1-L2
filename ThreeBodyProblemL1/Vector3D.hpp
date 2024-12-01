@@ -26,11 +26,19 @@ public:
 		this->z += sum.z;
 		return *this;
 	}
-	Vector3D operator-(Vector3D& sum) {
+	Vector3D operator-(Vector3D& sum)const {
 		return Vector3D(this->x - sum.x, this->y - sum.y, this->z - sum.z);
 	}
 	Vector3D operator*(float fl) {
 		return Vector3D(this->x * fl, this->y * fl, this->z * fl);
+	}
+	void normalize() {
+		auto ln = length();
+		if (ln != 0) {
+			x /= ln;
+			y /= ln;
+			z /= ln;
+		}
 	}
 	void operator-=(Vector3D& sum) {
 		this->x -= sum.x;
@@ -40,10 +48,7 @@ public:
 	double length() {
 		return sqrt((x * x) + (y * y) + (z*z));
 	}
-	double distance(Vector3D& vec3) {
+	double distance(Vector3D& vec3) const {
 		return sqrt(((vec3.x - x) * (vec3.x - x) + (vec3.y - y) * (vec3.y - y) + (vec3.z - z) * (vec3.z- z)));
 	}
-private:
-
-
 };

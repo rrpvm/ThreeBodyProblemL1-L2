@@ -1,25 +1,29 @@
 #include "DefaultBody.hpp"
 #include "UniverseCmd.hpp"
 #include "IRender.h"
+#define DEFAULT_RADIUS 6.0F
 void DefaultBody::update(float elapsedTimeFromPrevUpdate)
 {
-    std::optional<std::vector<DefaultBody>> bodies = mCmdPtr->getPrevDataTick();
+    std::optional<std::vector<DefaultBody>> bodies = mCmdPtr->lastCalculation;
     if (!bodies.has_value()) {
         return;
     }
     double Fx = 0, Fy = 0, Fz = 0;
-    for (auto& otherBody : bodies.value()) {
-        if (&otherBody == this) continue;
-        Vector3D sOrigin = mOrigin - otherBody.mOrigin;
+    for (DefaultBody otherBody : bodies.value()) {
+        if (this == otherBody) {
+            continue;
+        }
+       
+        Vector3D sOrigin = otherBody.mOrigin - this->mOrigin;
         double dstBtwBodies = this->mOrigin.distance(otherBody.mOrigin);
         if (dstBtwBodies == 0.0) continue;
 
-        // Сила гравитации (F = G * m1 * m2 / r^2), при этом вычисляем силу как вектор
-        double force = mCmdPtr->uGravity * (mass * otherBody.mass) / (pow(dstBtwBodies, 3));
+        // Сила гравитации (F = G * m1 * m2 / r^2)
+        double force = mCmdPtr->uGravity * (mass * otherBody.mass) / (pow(dstBtwBodies, 2));
 
         // Разложение силы на компоненты по осям
-        Fx += force * sOrigin.x;
-        Fy += force * sOrigin.y;
+        Fx += force * sOrigin.x / dstBtwBodies ;
+        Fy += force * sOrigin.y /dstBtwBodies;
         Fz += force * sOrigin.z;
     }
 
@@ -29,8 +33,8 @@ void DefaultBody::update(float elapsedTimeFromPrevUpdate)
     mA.z = Fz / this->mass;
 
     //v =  v0 + a*dt;
-    mV = mA * elapsedTimeFromPrevUpdate;
-
+    mV += mA * elapsedTimeFromPrevUpdate;
+   
 
     /*альтернативная запись :
     mV.x += mA.x * elapsedTimeFromPrevUpdate;
@@ -46,7 +50,7 @@ void DefaultBody::update(float elapsedTimeFromPrevUpdate)
 
 void DefaultBody::draw(IRender* renderer)
 {
-    static Color mColor(255, 255, 0, 0);
+    static Color mColor(255, 255, 255, 255);
 
  
     int screenW = renderer->getScreenWidth();
@@ -54,5 +58,5 @@ void DefaultBody::draw(IRender* renderer)
     int transformX = screenW / 2 + (mOrigin.x / (MAX_ORIGIN_X * 2)) * screenW;
     int transformY = screenH / 2 + (mOrigin.y / (MAX_ORIGIN_X * 2)) * screenH;
 
-    renderer->drawFilledCircle(mColor, { transformX,transformY},6.0F);
+    renderer->drawFilledCircle(mColor, { transformX,transformY},DEFAULT_RADIUS);
 }

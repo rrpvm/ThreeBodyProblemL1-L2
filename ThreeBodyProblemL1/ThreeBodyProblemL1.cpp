@@ -10,12 +10,11 @@
 #include "CheckBoxView.hpp"
 #include "SpacerView.hpp"
 #include "ApplicationState.h"
-
+#include "EarthBody.hpp"
+#include "SunBody.hpp"
 #define WND_NAME "Three body problem solve"
 ApplicationState appState = ApplicationState();
-std::unique_ptr<DefaultBody> theSun(new DefaultBody(9160000,Vector3D(0,0,0),Vector3D(0,0,0), appState.applicationUniverse->getCmd()));
-std::unique_ptr<DefaultBody> theEarth(new DefaultBody(800, appState.applicationUniverse->getCmd()));
-std::unique_ptr<DefaultBody> theMoon(new DefaultBody(200, appState.applicationUniverse->getCmd()));
+
 void scene1(Window* window);
 void onTBPCallback();
 void threeBodyProblem();
@@ -55,13 +54,12 @@ int WindowApplication(HINSTANCE hInstance, int nCmdShow) {
     Window solveWindow = Window(1280, 720, { 255,255,255,255 });
     //  scene1(&solveWindow);
 
-
-   threeBodyProblem();
+    appState.renderer->clear();
+    threeBodyProblem();
     while (GetMessage(&msg, NULL, 0, 0)) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
-        //1000 / 60hz = 15.5
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     appState.applicationUniverse->stopSimulation();
   //  simulationWorker.join();
@@ -70,7 +68,6 @@ int WindowApplication(HINSTANCE hInstance, int nCmdShow) {
 
 int main()
 {
-    srand(GetTickCount64());
     setlocale(LC_ALL, "ru");
     ApplicationState appState = ApplicationState();
     std::cout << "Запускаем чертолёт!";
@@ -91,13 +88,21 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         break;
     }
     case WM_PAINT: {
-        std::optional<std::vector<DefaultBody>> lastTick = appState.applicationUniverse->getCmd()->getPrevDataTick();
-        if (lastTick.has_value()) {
-            appState.renderer->clear();
-            for (auto& body : lastTick.value()) {
-                body.draw(appState.renderer.get());
-            }
-        }
+       // appState.renderer->clear();
+        /*
+        std::vector<DefaultBody>* history = appState.applicationUniverse->getCmd()->cachedCalculations;
+        for (int i = 0; i < appState.applicationUniverse->getCmd()->lastTick; i++) {
+           for (auto& body : history[i]) {
+               body.draw(appState.renderer.get());
+           }
+       }*/
+        appState.renderer->clear();
+       auto f = appState.applicationUniverse->getCmd()->lastCalculation;
+       if (f.has_value()) {
+           for (auto& body : f.value()) {
+               body.draw(appState.renderer.get());
+           }
+       }
         return 0;
     }
 
@@ -124,15 +129,22 @@ void scene1(Window* window) {
     window->setView(mGuiRoot);
 }
 void onTBPCallback() {
-    //лишнее
     InvalidateRect(appState.windowHWND, NULL, TRUE);
 };
 void threeBodyProblem() {
    
-    appState.applicationUniverse->setOnReadyFrameSimulation(onTBPCallback);
-    appState.applicationUniverse->addBody(theEarth.get());
-    appState.applicationUniverse->addBody(theSun.get());
-    appState.applicationUniverse->addBody(theMoon.get());
+    appState.applicationUniverse->setOnReadyFrameSimulation((UniversePreparedCallback)onTBPCallback);
+    auto sun = new SunBody(Vector3D(), Vector3D(), appState.applicationUniverse->getCmd());
+    appState.mBodies.push_back(sun);
+    auto earth = new EarthBody(appState.applicationUniverse->getCmd(), sun, Vector3D(13.0F,13.0F, 0.0F));
+    appState.mBodies.push_back(earth);
+    
+    appState.applicationUniverse->addBody(sun);
+    appState.applicationUniverse->addBody(earth);
+    //memory leak, but who cares?
+    for (int i = 0; i < 8; i++) {
+     //   appState.applicationUniverse->addBody(new DefaultBody(100+i,rand() % 500, appState.applicationUniverse->getCmd()));
+    }
     std::thread simulationWorker([] {
         appState.applicationUniverse->runSimulation();
         });

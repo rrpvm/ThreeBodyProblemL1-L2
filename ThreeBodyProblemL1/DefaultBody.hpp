@@ -4,42 +4,38 @@
 #include "assert.h"
 #include <random>
 #include <Windows.h>
-class UniverseCmd;
 #define MAX_ORIGIN_X 50.0F
-class DefaultBody : public IRenderable{
-private:
+
+class UniverseCmd;
+class DefaultBody : public IRenderable {
+protected:
+	int id;
+	double mass{ 0.0 };//kg
 	Vector3D mOrigin{};
 	Vector3D mV{};//скорость по осям
 	Vector3D mA{};//ускорение по осям
-	double mass{ 0.0 };//kg
 	UniverseCmd* mCmdPtr{ nullptr };//const
 public:
-	DefaultBody(double objMass, UniverseCmd* cmdPtr) {
-		assert(objMass >= 0.0 && cmdPtr != nullptr && "invalid object mass");
+	virtual ~DefaultBody(){
+
+	}
+	DefaultBody(size_t id, UniverseCmd* cmdPtr) :id(id) {
 		mCmdPtr = cmdPtr;
-	
 		mOrigin = {
 			//[-0.5,0.5](-50,50)
 			(rand() % 100) - MAX_ORIGIN_X,
 			(rand() % 100) - MAX_ORIGIN_X,
-			(rand() % 100) - MAX_ORIGIN_X,
+			0,
 		};
 		mV = {
-			//[-0.5,0.5](-5,5)
-		(rand() % 10) - 5.0F,
-		(rand() % 10) - 5.0F,
-		(rand() % 10) - 5.0F,
+			//[-50,50]/20F
+		((rand() % 100) - 50.0F) / 20.0F,
+		((rand() % 100) - 50.0F) / 20.0F,
+		0,
 		};
-		this->mass = objMass;
+		this->mass = rand() % 1000000;
 	};
-	DefaultBody(double objMass,const Vector3D& origin, const Vector3D& speed, UniverseCmd* cmdPtr) {
-		assert(objMass >= 0.0 && cmdPtr != nullptr && "invalid object mass");
-		mCmdPtr = cmdPtr;
-		mOrigin = origin;
-		mV = speed;
-		this->mass = objMass;
-	};
-	DefaultBody(const DefaultBody& mCopyObj) {
+	DefaultBody(const DefaultBody& mCopyObj) :id(mCopyObj.id) {
 		this->mOrigin = mCopyObj.mOrigin;
 		this->mV = mCopyObj.mV;
 		this->mA = mCopyObj.mA;
@@ -47,6 +43,22 @@ public:
 		this->mCmdPtr = mCopyObj.mCmdPtr;
 	}
 	void update(float elapsedTimeFromPrevUpdate);
+	const Vector3D& getOrigin() {
+		return this->mOrigin;
+	}
+	const double getMass() {
+		return this->mass;
+	}
+	bool operator==(DefaultBody* other) {
+		return this->id == other->id;
+	}
 	virtual void draw(IRender* renderer) override;
-private:
+protected:
+	DefaultBody(size_t id, double objMass, const Vector3D& origin, const Vector3D& speed, UniverseCmd* cmdPtr) :id(id) {
+		assert(objMass >= 0.0 && cmdPtr != nullptr && "invalid object mass");
+		mCmdPtr = cmdPtr;
+		mOrigin = origin;
+		mV = speed;
+		this->mass = objMass;
+	};
 };
