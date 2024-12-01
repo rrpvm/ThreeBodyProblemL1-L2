@@ -28,12 +28,12 @@ public:
 			0,
 		};
 		mV = {
-			//[-50,50]/20F
-		((rand() % 100) - 50.0F) / 20.0F,
-		((rand() % 100) - 50.0F) / 20.0F,
+			//-50,50 
+		((rand() % 200) - 100.0F) / 2.0F,
+		((rand() % 200) - 100.0F) / 2.0F,
 		0,
 		};
-		this->mass = rand() % 1000000;
+		this->mass = rand() % 10000;
 	};
 	DefaultBody(const DefaultBody& mCopyObj) :id(mCopyObj.id) {
 		this->mOrigin = mCopyObj.mOrigin;
@@ -42,6 +42,7 @@ public:
 		this->mass = mCopyObj.mass;
 		this->mCmdPtr = mCopyObj.mCmdPtr;
 	}
+	DefaultBody(const DefaultBody* mCopyObj) : DefaultBody(*mCopyObj) {};
 	void update(float elapsedTimeFromPrevUpdate);
 	const Vector3D& getOrigin() {
 		return this->mOrigin;

@@ -4,12 +4,12 @@
 #define DEFAULT_RADIUS 6.0F
 void DefaultBody::update(float elapsedTimeFromPrevUpdate)
 {
-    std::optional<std::vector<DefaultBody>> bodies = mCmdPtr->lastCalculation;
+    std::optional<std::vector<DefaultBody>> bodies = mCmdPtr->lastLogicInstance;
     if (!bodies.has_value()) {
         return;
     }
     double Fx = 0, Fy = 0, Fz = 0;
-    for (DefaultBody otherBody : bodies.value()) {
+    for (DefaultBody& otherBody : bodies.value()) {
         if (this == otherBody) {
             continue;
         }

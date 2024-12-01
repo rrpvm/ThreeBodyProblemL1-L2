@@ -3,7 +3,7 @@
 #include "DefaultBody.hpp"
 #include <iostream>
 #include <format>
-#define SUN_MASS 1337448
+#define SUN_MASS 133744889
 #define SUN_ID -1
 class SunBody : public DefaultBody {
 public:

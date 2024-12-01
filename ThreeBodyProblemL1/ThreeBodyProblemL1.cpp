@@ -88,20 +88,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         break;
     }
     case WM_PAINT: {
-       // appState.renderer->clear();
-        /*
-        std::vector<DefaultBody>* history = appState.applicationUniverse->getCmd()->cachedCalculations;
-        for (int i = 0; i < appState.applicationUniverse->getCmd()->lastTick; i++) {
-           for (auto& body : history[i]) {
-               body.draw(appState.renderer.get());
-           }
-       }*/
-        appState.renderer->clear();
-       auto f = appState.applicationUniverse->getCmd()->lastCalculation;
-       if (f.has_value()) {
-           for (auto& body : f.value()) {
-               body.draw(appState.renderer.get());
-           }
+       appState.renderer->clear();
+       auto f = appState.applicationUniverse->getCmd()->getPrevDataTick();
+       for (DefaultBody* fBody : appState.mBodies) {
+           fBody->draw(appState.renderer.get());
        }
         return 0;
     }
@@ -135,15 +125,14 @@ void threeBodyProblem() {
    
     appState.applicationUniverse->setOnReadyFrameSimulation((UniversePreparedCallback)onTBPCallback);
     auto sun = new SunBody(Vector3D(), Vector3D(), appState.applicationUniverse->getCmd());
-    appState.mBodies.push_back(sun);
     auto earth = new EarthBody(appState.applicationUniverse->getCmd(), sun, Vector3D(13.0F,13.0F, 0.0F));
+    appState.mBodies.push_back(sun);
     appState.mBodies.push_back(earth);
-    
-    appState.applicationUniverse->addBody(sun);
-    appState.applicationUniverse->addBody(earth);
-    //memory leak, but who cares?
-    for (int i = 0; i < 8; i++) {
-     //   appState.applicationUniverse->addBody(new DefaultBody(100+i,rand() % 500, appState.applicationUniverse->getCmd()));
+    for (int i = 0; i < 64; i++) {
+        appState.mBodies.push_back(new DefaultBody(1337 + i, appState.applicationUniverse->getCmd()));
+    }
+    for (auto* b : appState.mBodies) {
+        appState.applicationUniverse->addBody(b);
     }
     std::thread simulationWorker([] {
         appState.applicationUniverse->runSimulation();
