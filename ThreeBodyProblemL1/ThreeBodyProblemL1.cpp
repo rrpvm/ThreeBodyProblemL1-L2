@@ -9,20 +9,15 @@
 #include <chrono>
 #include "CheckBoxView.hpp"
 #include "SpacerView.hpp"
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    switch (uMsg) {
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
-    case WM_PAINT:
+#include "ApplicationState.h"
 
-        return 0;
-    default:
-        return DefWindowProc(hwnd, uMsg, wParam, lParam);
-    }
-}
-constexpr int waitTime = 1000 / 120;
+#define WND_NAME "Three body problem solve"
+ApplicationState appState = ApplicationState();
 void scene1(Window* window);
+void onTBPCallback();
+std::thread threeBodyProblem();
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
 int WindowApplication(HINSTANCE hInstance, int nCmdShow) {
     const char* CLASS_NAME = "RRPVM_CLASS_NAME";
 
@@ -35,40 +30,84 @@ int WindowApplication(HINSTANCE hInstance, int nCmdShow) {
     RegisterClass(&wc);
 
     // Создание окна
-    HWND hwnd = CreateWindowEx(
+    appState.windowHWND = CreateWindowEx(
         0,
         CLASS_NAME,
-        "Three body problem solve",
+        WND_NAME,
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720,
         NULL, NULL, hInstance, NULL
     );
 
-    if (!hwnd) return 0;
+    if (!appState.windowHWND) return 0;
 
-    ShowWindow(hwnd, nCmdShow);
+    ShowWindow(appState.windowHWND, nCmdShow);
 
     // Цикл обработки сообщений
     MSG msg = {};
-    HDC windowDeviceContext = GetDC(hwnd);
-    IRender* renderer = new  WinGdiRender(windowDeviceContext);
+    HDC windowDeviceContext = GetDC(appState.windowHWND);
+    appState.renderer = std::make_unique<WinGdiRender>(windowDeviceContext);
+    appState.renderer->setScreenSize({1280,720});
+    appState.renderer->setBgColor(Color(255,33, 33, 33));
     Window solveWindow = Window(1280, 720, { 255,255,255,255 });
-    scene1(&solveWindow);
+    //  scene1(&solveWindow);
+
+
+   auto simulationWorker =  threeBodyProblem();
     while (GetMessage(&msg, NULL, 0, 0)) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
-        renderer->drawWindow(solveWindow);
-        
-        std::this_thread::sleep_for(std::chrono::milliseconds(waitTime));
+        //1000 / 60hz = 15.5
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
-    delete renderer;
+    appState.applicationUniverse->stopSimulation();
+    simulationWorker.join();
     return 0;
+}
+
+int main()
+{
+    srand(GetTickCount64());
+    setlocale(LC_ALL, "ru");
+    ApplicationState appState = ApplicationState();
+    std::cout << "Запускаем чертолёт!";
+    return WindowApplication(GetModuleHandle(NULL), SW_SHOW);
+}
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    switch (uMsg) {
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        return 0;
+    case WM_SIZE:
+    {
+        int width = LOWORD(lParam);
+        int height = HIWORD(lParam);
+        if (appState.renderer != nullptr) {
+            appState.renderer->setScreenSize({ width,height });
+        }
+        break;
+    }
+    case WM_PAINT: {
+        
+        std::optional<std::vector<DefaultBody>> lastTick = appState.applicationUniverse->getCmd()->getPrevDataTick();
+        if (lastTick.has_value()) {
+            appState.renderer->clear();
+            for (auto& body : lastTick.value()) {
+                body.draw(appState.renderer.get());
+            }
+        }
+        return 0;
+    }
+
+    default:
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
 }
 void scene1(Window* window) {
     LinearLayout* mGuiRoot = new LinearLayout("mainRoot", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
     mGuiRoot->setBackgroundColor(new Color(255, 33, 33, 33));
-    CheckBoxView* cbv1 = new CheckBoxView("first checkbox", 40,40);
-    CheckBoxView* cbv2 = new CheckBoxView("second checkbox", 40,40);
+    CheckBoxView* cbv1 = new CheckBoxView("first checkbox", 40, 40);
+    CheckBoxView* cbv2 = new CheckBoxView("second checkbox", 40, 40);
     LinearLayout* secondRoot = new LinearLayout("secondRoot", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
     secondRoot->setBackgroundColor(new Color(255, 99, 99, 99));
     CheckBoxView* cbv3 = new CheckBoxView("third checkbox", 40, 40);
@@ -82,10 +121,21 @@ void scene1(Window* window) {
     mGuiRoot->addView(secondRoot);
     window->setView(mGuiRoot);
 }
-
-int main()
-{
-    setlocale(LC_ALL, "ru");
-    std::cout << "Запускаем чертолёт!";
-    return WindowApplication(GetModuleHandle(NULL), SW_SHOW);
+void onTBPCallback() {
+    //лишнее
+ //   InvalidateRect(appState.windowHWND, NULL, TRUE);
+};
+std::thread threeBodyProblem() {
+    std::unique_ptr<DefaultBody> theSun(new DefaultBody(9160000, appState.applicationUniverse->getCmd()));
+    std::unique_ptr<DefaultBody> theEarth(new DefaultBody(800, appState.applicationUniverse->getCmd()));
+    std::unique_ptr<DefaultBody> theMoon(new DefaultBody(200, appState.applicationUniverse->getCmd()));
+    appState.applicationUniverse->setOnReadyFrameSimulation(onTBPCallback);
+    appState.applicationUniverse->addBody(theEarth.get());
+    appState.applicationUniverse->addBody(theSun.get());
+    appState.applicationUniverse->addBody(theMoon.get());
+    std::thread simulationWorker([] {
+        appState.applicationUniverse->runSimulation();
+        });
+    simulationWorker.detach();
+    return simulationWorker;
 }

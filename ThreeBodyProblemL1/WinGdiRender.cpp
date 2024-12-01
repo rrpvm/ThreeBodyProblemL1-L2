@@ -1,5 +1,10 @@
 #include "WinGdiRender.hpp"
 #include <string>
+void WinGdiRender::clear()
+{
+	static Vector2 origin{ 0,0 };
+	drawFilledRect(this->bgColor, origin, this->screenSize);
+}
 void WinGdiRender::drawWindow( Window& mWindow)
 {
 	mWindow.draw(this);

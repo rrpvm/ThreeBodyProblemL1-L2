@@ -130,9 +130,11 @@
   <ItemGroup>
     <ClCompile Include="BaseView.cpp" />
     <ClCompile Include="CheckBoxView.cpp" />
+    <ClCompile Include="DefaultBody.cpp" />
     <ClCompile Include="LinearLayout.cpp" />
     <ClCompile Include="SpacerView.cpp" />
     <ClCompile Include="ThreeBodyProblemL1.cpp" />
+    <ClCompile Include="Universe.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WinGdiRender.cpp" />
   </ItemGroup>
@@ -140,6 +142,7 @@
     <ClInclude Include="BaseView.h" />
     <ClInclude Include="CheckBoxView.hpp" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="DefaultBody.hpp" />
     <ClInclude Include="ICheckBox.hpp" />
     <ClInclude Include="IRender.h" />
     <ClInclude Include="LayoutParameter.hpp" />
@@ -148,7 +151,11 @@
     <ClInclude Include="BoundRect.hpp" />
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="SpacerView.hpp" />
+    <ClInclude Include="Universe.h" />
+    <ClInclude Include="UniverseCmd.hpp" />
+    <ClInclude Include="ApplicationState.h" />
     <ClInclude Include="Vector2.hpp" />
+    <ClInclude Include="Vector3D.hpp" />
     <ClInclude Include="Window.hpp" />
     <ClInclude Include="WinGdiRender.hpp" />
   </ItemGroup>

@@ -25,6 +25,12 @@
     <Filter Include="Исходные файлы\gui">
       <UniqueIdentifier>{c1e10c36-f98f-4041-9d9e-904990479c63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\tbp">
+      <UniqueIdentifier>{f9fef56e-6803-4b23-85e5-c37d90ceec33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\tbp">
+      <UniqueIdentifier>{35592028-0d39-4162-97e2-b566b09b3759}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ThreeBodyProblemL1.cpp">
@@ -47,6 +53,12 @@
     </ClCompile>
     <ClCompile Include="SpacerView.cpp">
       <Filter>Исходные файлы\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultBody.cpp">
+      <Filter>Исходные файлы\tbp</Filter>
+    </ClCompile>
+    <ClCompile Include="Universe.cpp">
+      <Filter>Исходные файлы\tbp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +103,21 @@
     </ClInclude>
     <ClInclude Include="LayoutParameter.hpp">
       <Filter>Файлы заголовков\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Universe.h">
+      <Filter>Файлы заголовков\tbp</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultBody.hpp">
+      <Filter>Файлы заголовков\tbp</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3D.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="UniverseCmd.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="ApplicationState.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

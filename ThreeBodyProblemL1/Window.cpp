@@ -8,7 +8,7 @@ void Window::setView(ParentView* mView)
 
 void Window::draw(IRender* renderer)
 {
-	//renderer->drawFilledRect(this->mBackgroundColor, this->origin, this->size);
+	renderer->drawFilledRect(this->mBackgroundColor, this->origin, this->size);
 	if (mParentView == nullptr)return;
 	mParentView->draw(renderer);
 }
