@@ -5,7 +5,7 @@
 #include <random>
 #include <Windows.h>
 #define MAX_ORIGIN_X 50.0F
-
+#define MAX_MASS_DEFAULT_BODY 10000
 class UniverseCmd;
 class DefaultBody : public IRenderable {
 protected:
@@ -33,7 +33,7 @@ public:
 		((rand() % 200) - 100.0F) / 2.0F,
 		0,
 		};
-		this->mass = rand() % 10000;
+		this->mass = rand() % MAX_MASS_DEFAULT_BODY;
 	};
 	DefaultBody(const DefaultBody& mCopyObj) :id(mCopyObj.id) {
 		this->mOrigin = mCopyObj.mOrigin;
@@ -44,11 +44,14 @@ public:
 	}
 	DefaultBody(const DefaultBody* mCopyObj) : DefaultBody(*mCopyObj) {};
 	void update(float elapsedTimeFromPrevUpdate);
-	const Vector3D& getOrigin() {
+	const Vector3D& getOrigin() const {
 		return this->mOrigin;
 	}
 	const double getMass() {
 		return this->mass;
+	}
+	const int getId() const {
+		return this->id;
 	}
 	bool operator==(DefaultBody* other) {
 		return this->id == other->id;

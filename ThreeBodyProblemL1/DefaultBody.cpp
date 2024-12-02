@@ -1,7 +1,7 @@
 #include "DefaultBody.hpp"
 #include "UniverseCmd.hpp"
 #include "IRender.h"
-#define DEFAULT_RADIUS 6.0F
+#define DEFAULT_RADIUS 5.0F
 void DefaultBody::update(float elapsedTimeFromPrevUpdate)
 {
     std::optional<std::vector<DefaultBody>> bodies = mCmdPtr->lastLogicInstance;
@@ -50,13 +50,34 @@ void DefaultBody::update(float elapsedTimeFromPrevUpdate)
 
 void DefaultBody::draw(IRender* renderer)
 {
+    if (mOrigin.x < -MAX_ORIGIN_X - 1 || mOrigin.x > MAX_ORIGIN_X + 1) {
+        return;
+    }
+    if (mOrigin.y < -MAX_ORIGIN_X - 1 || mOrigin.y > MAX_ORIGIN_X + 1) {
+        return;
+    }
     static Color mColor(255, 255, 255, 255);
+    static const uintptr_t ticksToTake = 256;
+    uintptr_t screenW = renderer->getScreenWidth();
+    uintptr_t screenH = renderer->getScreenHeight();
+    uintptr_t screenCenterW = screenW / 2;
+    uintptr_t screenCenterH = screenH / 2;
+    int transformX = screenCenterW + (mOrigin.x / (MAX_ORIGIN_X * 2)) * screenW;
+    int transformY = screenCenterH + (mOrigin.y / (MAX_ORIGIN_X * 2)) * screenH;
 
- 
-    int screenW = renderer->getScreenWidth();
-    int screenH = renderer->getScreenHeight();
-    int transformX = screenW / 2 + (mOrigin.x / (MAX_ORIGIN_X * 2)) * screenW;
-    int transformY = screenH / 2 + (mOrigin.y / (MAX_ORIGIN_X * 2)) * screenH;
 
-    renderer->drawFilledCircle(mColor, { transformX,transformY},DEFAULT_RADIUS);
+    POINT arrPoints[ticksToTake]{};
+    std::vector<Vector3D> positionsPrev = mCmdPtr->getLastNPrevTicksPosition(id, ticksToTake);
+    uintptr_t i = 0u;
+    for (auto& position : positionsPrev) {
+        if (i >= ticksToTake)break;
+        position.x = screenCenterW + (position.x / (MAX_ORIGIN_X * 2)) * screenW;
+        position.y = screenCenterH + (position.y / (MAX_ORIGIN_X * 2)) * screenH;
+        arrPoints[i] = { (int)position.x, (int)position.y };
+        i++;
+    }
+    renderer->drawPolygon(mColor, arrPoints, i, false);
+  
+
+    renderer->drawFilledCircle(mColor, { transformX,transformY},(1 + (mass/MAX_MASS_DEFAULT_BODY)) *(DEFAULT_RADIUS-1));
 }

@@ -20,6 +20,8 @@ public:
 	virtual void drawFilledRect(Color fColor, Vector2 origin, Vector2 size) override;
 	virtual void drawFilledRectWithOutline(Color fillColor, Color outlineColor, Vector2 origin, Vector2 size, uintptr_t thickness = 1u) override;
 	virtual void drawText(const std::string& text, LPRECT lpRect) override;
+	virtual Vector2 getTextSize(const std::string& text) override;
+	virtual void drawPolygon(const Color& mColor, POINT* points, int size, bool filled) override;
 private:
 	
 };

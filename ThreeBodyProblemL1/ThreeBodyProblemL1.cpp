@@ -95,7 +95,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
        for (DefaultBody* fBody : appState.mBodies) {
            fBody->draw(appState.renderer.get());
        }
-        return 0;
+       static RECT tickRect = { 15,0,80,150 };
+       static RECT timeRect = { 15,30,180,150 };
+       std::string tickText = "tick: " + std::to_string(appState.applicationUniverse->getCmd()->currentTick);
+       std::string timeText = "time: " + std::to_string(appState.applicationUniverse->getCmd()->currentTick * appState.applicationUniverse->getCmd()->deltaTime) +" seconds";
+       appState.renderer->drawText(tickText, &tickRect);
+       appState.renderer->drawText(timeText, &timeRect);
+       return 0;
     }
 
     default:
@@ -126,11 +132,11 @@ void onTBPCallback() {
 void threeBodyProblem() {
    
     appState.applicationUniverse->setOnReadyFrameSimulation((UniversePreparedCallback)onTBPCallback);
-    auto sun = new SunBody(Vector3D(), Vector3D(), appState.applicationUniverse->getCmd());
+    auto sun = new SunBody(Vector3D(), Vector3D(0.0F,-0.1F,.0F), appState.applicationUniverse->getCmd());
     auto earth = new EarthBody(appState.applicationUniverse->getCmd(), sun, Vector3D(13.0F,13.0F, 0.0F));
     appState.mBodies.push_back(sun);
     appState.mBodies.push_back(earth);
-    for (int i = 0; i < 64; i++) {
+    for (int i = 0; i < 24; i++) {
         appState.mBodies.push_back(new DefaultBody(1337 + i, appState.applicationUniverse->getCmd()));
     }
     for (auto* b : appState.mBodies) {
