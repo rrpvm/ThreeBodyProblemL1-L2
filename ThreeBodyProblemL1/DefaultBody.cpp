@@ -2,6 +2,7 @@
 #include "UniverseCmd.hpp"
 #include "IRender.h"
 #define DEFAULT_RADIUS 5.0F
+#define DEFAULT_HISTORY_TICKS 64u
 void DefaultBody::update(float elapsedTimeFromPrevUpdate)
 {
     std::optional<std::vector<DefaultBody>> bodies = mCmdPtr->lastLogicInstance;
@@ -57,7 +58,7 @@ void DefaultBody::draw(IRender* renderer)
         return;
     }
     static Color mColor(255, 255, 255, 255);
-    static const uintptr_t ticksToTake = 256;
+    static const uintptr_t ticksToTake = DEFAULT_HISTORY_TICKS;
     uintptr_t screenW = renderer->getScreenWidth();
     uintptr_t screenH = renderer->getScreenHeight();
     uintptr_t screenCenterW = screenW / 2;

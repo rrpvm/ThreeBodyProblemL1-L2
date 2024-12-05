@@ -136,7 +136,7 @@ void threeBodyProblem() {
     auto earth = new EarthBody(appState.applicationUniverse->getCmd(), sun, Vector3D(13.0F,13.0F, 0.0F));
     appState.mBodies.push_back(sun);
     appState.mBodies.push_back(earth);
-    for (int i = 0; i < 24; i++) {
+    for (int i = 0; i < appState.START_BODIES_COUNT; i++) {
         appState.mBodies.push_back(new DefaultBody(1337 + i, appState.applicationUniverse->getCmd()));
     }
     for (auto* b : appState.mBodies) {

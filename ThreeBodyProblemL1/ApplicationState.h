@@ -8,6 +8,7 @@ private:
 	const double APPLICATION_DT = 0.005;
 	const double APPLICATION_GRAVITY_CONST = 0.0001;
 public:
+	const uintptr_t START_BODIES_COUNT = 32;
 	ApplicationState() {
 		srand(GetTickCount64());
 	}

@@ -6,13 +6,13 @@
 #include <optional>
 #include <mutex>
 #include <iostream>
-#define START_HISTORY_CAPACITY 131072 //2^17
+#define SEGMENT_HISTORY_CAPACITY 2048 //2^11
 struct UniverseCmd
 {
 private:
 	std::optional<std::vector<DefaultBody*>> lastFullCalculation = std::nullopt;//full object
 	std::unordered_map<int, Vector3D>*/*map[body_position,position]*/ cmdHistory = nullptr;
-	int currentCapacity = START_HISTORY_CAPACITY;
+	int currentCapacity = SEGMENT_HISTORY_CAPACITY;
 	std::mutex lock;
 public:
 	std::optional<std::vector<DefaultBody>> lastLogicInstance = std::nullopt;//object-slice, for update logic
@@ -22,7 +22,7 @@ public:
 	int lastTick{ 0 };
 	UniverseCmd(double dT, double uG) : deltaTime(dT), uGravity(uG) {
 		lastFullCalculation = std::nullopt;
-		cmdHistory = new std::unordered_map<int, Vector3D>[START_HISTORY_CAPACITY] {std::unordered_map<int,Vector3D>()};
+		cmdHistory = new std::unordered_map<int, Vector3D>[SEGMENT_HISTORY_CAPACITY] {std::unordered_map<int,Vector3D>()};
 	}
 	~UniverseCmd() {
 		delete[] cmdHistory;
@@ -50,15 +50,24 @@ public:
 		lastFullCalculation = copy;
 		lastLogicInstance = copySlice;
 		lock.lock();
-		cmdHistory[tick % START_HISTORY_CAPACITY] = historyItem;
+		cmdHistory[tick % SEGMENT_HISTORY_CAPACITY] = historyItem;
 		lock.unlock();
 		lastTick = tick;
 	};
 	std::vector<Vector3D> getAllPrevTicksPosition(int bodyId) {
 		std::vector<Vector3D> vectorResult = std::vector<Vector3D>();
-		vectorResult.reserve(lastTick);
+		uintptr_t size = min(SEGMENT_HISTORY_CAPACITY, lastTick);
+		uintptr_t startFrom = lastTick % SEGMENT_HISTORY_CAPACITY;
+		vectorResult.reserve(size);
 		lock.lock();
-		for (int i = 0; i < lastTick; i++) {
+		//oldest
+		for (uintptr_t i = startFrom + 1; i < size; i++) {
+			auto result = cmdHistory[i].find(bodyId);
+			if (result == cmdHistory[i].end())continue;
+			vectorResult.emplace_back(result->second);
+		}
+		//new
+		for (uintptr_t i = 0u; i < startFrom; ++i) {
 			auto result = cmdHistory[i].find(bodyId);
 			if (result == cmdHistory[i].end())continue;
 			vectorResult.emplace_back(result->second);
@@ -68,9 +77,21 @@ public:
 	}
 	std::vector<Vector3D> getLastNPrevTicksPosition(int bodyId, int ticksToTake) {
 		std::vector<Vector3D> vectorResult = std::vector<Vector3D>();
-		vectorResult.reserve(min(ticksToTake,lastTick));
+		uintptr_t balancePointer = lastTick % SEGMENT_HISTORY_CAPACITY;
+		uintptr_t arrBoundRight = min(lastTick, SEGMENT_HISTORY_CAPACITY);
+		int takesFromLeft = min(balancePointer, ticksToTake);//more new
+		int startOldestData = arrBoundRight - takesFromLeft;
+		int takesFromRight = ticksToTake - takesFromLeft;//more old
+		vectorResult.reserve(min(ticksToTake,SEGMENT_HISTORY_CAPACITY));
 		lock.lock();
-		for (int i = max(lastTick-ticksToTake,0); i < max(lastTick, ticksToTake); i++) {
+		//oldest
+		for (int i = startOldestData + 1; i < startOldestData + takesFromRight && i < arrBoundRight; i++) {
+			auto result = cmdHistory[i].find(bodyId);
+			if (result == cmdHistory[i].end())continue;
+			vectorResult.emplace_back(result->second);
+		}
+		//newest
+		for (int i = balancePointer; i > balancePointer - takesFromLeft; --i) {
 			auto result = cmdHistory[i].find(bodyId);
 			if (result == cmdHistory[i].end())continue;
 			vectorResult.emplace_back(result->second);
