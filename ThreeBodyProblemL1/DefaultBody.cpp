@@ -5,22 +5,22 @@
 #define DEFAULT_HISTORY_TICKS 64u
 void DefaultBody::update(float elapsedTimeFromPrevUpdate)
 {
-    std::optional<std::vector<DefaultBody>> bodies = mCmdPtr->lastLogicInstance;
-    if (!bodies.has_value()) {
+    std::vector<DefaultBody*> bodies = mCmdPtr->mBodies;
+    if (bodies.empty()) {
         return;
     }
     double Fx = 0, Fy = 0, Fz = 0;
-    for (DefaultBody& otherBody : bodies.value()) {
+    for (DefaultBody* otherBody : bodies) {
         if (this == otherBody) {
             continue;
         }
        
-        Vector3D sOrigin = otherBody.mOrigin - this->mOrigin;
-        double dstBtwBodies = this->mOrigin.distance(otherBody.mOrigin);
+        Vector3D sOrigin = otherBody->mOrigin - this->mOrigin;
+        double dstBtwBodies = this->mOrigin.distance(otherBody->mOrigin);
         if (dstBtwBodies == 0.0) continue;
 
         // Сила гравитации (F = G * m1 * m2 / r^2)
-        double force = mCmdPtr->uGravity * (mass * otherBody.mass) / (pow(dstBtwBodies, 2));
+        double force = mCmdPtr->uGravity * (mass * otherBody->mass) / (pow(dstBtwBodies, 2));
 
         // Разложение силы на компоненты по осям
         Fx += force * sOrigin.x / dstBtwBodies ;

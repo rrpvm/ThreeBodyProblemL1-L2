@@ -15,7 +15,7 @@ private:
 	int currentCapacity = SEGMENT_HISTORY_CAPACITY;
 	std::mutex lock;
 public:
-	std::optional<std::vector<DefaultBody>> lastLogicInstance = std::nullopt;//object-slice, for update logic
+	std::vector<DefaultBody*> mBodies = std::vector<DefaultBody*>();
 	const double deltaTime = 0.1;// action-interval s
 	const double uGravity;//university gravity cosnt
 	int currentTick{ 0 };
@@ -28,18 +28,15 @@ public:
 		delete[] cmdHistory;
 	}
 public:
-	void update(int tick, std::vector<DefaultBody*>& bodyList) {
+	void setBodies(const std::vector<DefaultBody*>& vector) {
+		this->mBodies = vector;
+	}
+	void update(int tick) {
 		if (lastTick > tick)return;
 		std::vector<DefaultBody*>copy = std::vector<DefaultBody*>();
-		std::vector<DefaultBody>copySlice = std::vector<DefaultBody>();
 		std::unordered_map<int,Vector3D>historyItem = std::unordered_map<int, Vector3D>();
-
-		if (lastLogicInstance.has_value()) {
-			lastLogicInstance.value().clear();//clear data
-		}
-		for (const DefaultBody* body : bodyList) {
+		for (const DefaultBody* body : mBodies) {
 			copy.push_back(new DefaultBody(body));
-			copySlice.push_back(*body);
 			historyItem.insert({ body->getId(), body->getOrigin() });
 		}
 		if (lastFullCalculation.has_value()) {
@@ -48,7 +45,6 @@ public:
 			}
 		}
 		lastFullCalculation = copy;
-		lastLogicInstance = copySlice;
 		lock.lock();
 		cmdHistory[tick % SEGMENT_HISTORY_CAPACITY] = historyItem;
 		lock.unlock();

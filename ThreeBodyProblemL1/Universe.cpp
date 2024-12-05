@@ -14,15 +14,13 @@ void Universe::addBody(DefaultBody* body)
 void Universe::runSimulation()
 {
 	this->isRunning = true;
+	mCmd.setBodies(mBodies);
 	while (isRunning) {
-		if (mCmd.currentTick == 0) {
-			mCmd.update(0, mBodies);
-		}
-		mCmd.currentTick++;
-		for (const auto& body : mBodies) {
+		for (DefaultBody* body : mBodies) {
 			body->update(mCmd.deltaTime);
 		}
-		mCmd.update(mCmd.currentTick, mBodies);
+		mCmd.update(mCmd.currentTick);
+		mCmd.currentTick++;
 		this->mPreparedCallback();
 		std::this_thread::sleep_for(std::chrono::milliseconds(LOGIC_TARGET_DELAY));
 	}
