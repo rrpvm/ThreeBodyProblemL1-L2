@@ -72,27 +72,32 @@ public:
 		return vectorResult;
 	}
 	std::vector<Vector3D> getLastNPrevTicksPosition(int bodyId, int ticksToTake) {
+		assert(ticksToTake < SEGMENT_HISTORY_CAPACITY);
 		std::vector<Vector3D> vectorResult = std::vector<Vector3D>();
 		uintptr_t balancePointer = lastTick % SEGMENT_HISTORY_CAPACITY;
 		uintptr_t arrBoundRight = min(lastTick, SEGMENT_HISTORY_CAPACITY);
-		int takesFromLeft = min(balancePointer, ticksToTake);//more new
-		int startOldestData = arrBoundRight - takesFromLeft;
-		int takesFromRight = ticksToTake - takesFromLeft;//more old
+		int takesFromLeft = min(balancePointer, min(ticksToTake,lastTick));//more new
+		int takesFromRight = min(ticksToTake, lastTick) - takesFromLeft;//more old
+		int startOldestData = arrBoundRight - takesFromRight;
+
 		vectorResult.reserve(min(ticksToTake,SEGMENT_HISTORY_CAPACITY));
 		lock.lock();
 		//oldest
-		for (int i = startOldestData + 1; i < startOldestData + takesFromRight && i < arrBoundRight; i++) {
+		for (int i = startOldestData; i < startOldestData + takesFromRight && i < arrBoundRight; i++) {
 			auto result = cmdHistory[i].find(bodyId);
 			if (result == cmdHistory[i].end())continue;
 			vectorResult.emplace_back(result->second);
 		}
 		//newest
-		for (int i = balancePointer; i > balancePointer - takesFromLeft; --i) {
+		for (int i = balancePointer - takesFromLeft; i <= balancePointer; i++) {
 			auto result = cmdHistory[i].find(bodyId);
 			if (result == cmdHistory[i].end())continue;
 			vectorResult.emplace_back(result->second);
 		}
 		lock.unlock();
+		if (lastTick== ticksToTake) {
+			assert(true);
+		}
 		return vectorResult;
 	}
 	std::optional<std::vector<DefaultBody*>> getPrevDataTick() {

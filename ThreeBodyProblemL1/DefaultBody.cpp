@@ -2,7 +2,7 @@
 #include "UniverseCmd.hpp"
 #include "IRender.h"
 #define DEFAULT_RADIUS 5.0F
-#define DEFAULT_HISTORY_TICKS 512u
+#define DEFAULT_HISTORY_TICKS 1024
 void DefaultBody::update(float elapsedTimeFromPrevUpdate)
 {
     std::vector<DefaultBody*> bodies = mCmdPtr->mBodies;
@@ -67,11 +67,10 @@ void DefaultBody::draw(IRender* renderer)
     int transformY = screenCenterH + (mOrigin.y / (MAX_ORIGIN_X * 2)) * screenH;
 
 
-    POINT arrPoints[ticksToTake]{};
+    POINT arrPoints[ticksToTake + 1]{};
     std::vector<Vector3D> positionsPrev = mCmdPtr->getLastNPrevTicksPosition(id, ticksToTake);
     uintptr_t i = 0u;
     for (auto& position : positionsPrev) {
-        if (i >= ticksToTake)break;
         position.x = screenCenterW + (position.x / (MAX_ORIGIN_X * 2)) * screenW;
         position.y = screenCenterH + (position.y / (MAX_ORIGIN_X * 2)) * screenH;
         arrPoints[i] = { (int)position.x, (int)position.y };
@@ -81,4 +80,8 @@ void DefaultBody::draw(IRender* renderer)
   
 
     renderer->drawFilledCircle(mColor, { transformX,transformY},(1 + (mass/MAX_MASS_DEFAULT_BODY)) *(DEFAULT_RADIUS-1));
+    Vector2 size = renderer->getTextSize(std::to_string(id));
+    RECT rc = { transformX - DEFAULT_RADIUS / 2 - size.x / 2, transformY + DEFAULT_RADIUS / 2, transformX + DEFAULT_RADIUS / 2 + size.x / 2, transformY + DEFAULT_RADIUS / 2 + size.y };
+
+    renderer->drawText(std::to_string(id), &rc);
 }

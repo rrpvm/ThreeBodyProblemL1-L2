@@ -1,8 +1,8 @@
 #include "Universe.h"
 #include <thread>
 #include <chrono>
-#define LOGIC_TARGET_FPS 185
-constexpr uintptr_t LOGIC_TARGET_DELAY = 1000 / LOGIC_TARGET_FPS;
+#define LOGIC_TARGET_FPS 240
+constexpr uintptr_t LOGIC_TARGET_DELAY = 1000000 / LOGIC_TARGET_FPS;
 void Universe::addBody(DefaultBody* body)
 {
 	for (const DefaultBody* mBody : mBodies) {
@@ -22,7 +22,7 @@ void Universe::runSimulation()
 		mCmd.update(mCmd.currentTick);
 		mCmd.currentTick++;
 		this->mPreparedCallback();
-		std::this_thread::sleep_for(std::chrono::milliseconds(LOGIC_TARGET_DELAY));
+		std::this_thread::sleep_for(std::chrono::microseconds(LOGIC_TARGET_DELAY));
 	}
 }
 
