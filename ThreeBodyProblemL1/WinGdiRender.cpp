@@ -3,6 +3,7 @@
 #include <math.h>
 #include <cmath>
 #include "Vector3D.hpp"
+#include "ApplicationState.h"
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
 #endif
@@ -11,10 +12,10 @@ void WinGdiRender::clear()
 {
 	static Vector2 origin{ 0,0 };
 	HBRUSH brush = CreateSolidBrush(bgColor.toRGB());
-	auto oldBrush = SelectObject(deviceContext, brush);
-	PatBlt(deviceContext, 0, 0, screenSize.x, screenSize.y, PATCOPY);
+	auto oldBrush = SelectObject(bufferContext, brush);
+	PatBlt(bufferContext, 0, 0, screenSize.x, screenSize.y, PATCOPY);
 	DeleteObject(brush);
-	SelectObject(deviceContext, oldBrush);
+	SelectObject(bufferContext, oldBrush);
 }
 void WinGdiRender::drawWindow( Window& mWindow)
 {
@@ -22,6 +23,7 @@ void WinGdiRender::drawWindow( Window& mWindow)
 }
 void WinGdiRender::drawFilledCircle(const Color& circleColor, const Vector2& origin, float radius)
 {
+	assert(bufferContext != nullptr && "back buffer nullptr");
 	static auto genSeeds = []()->Vector3D* {
 		auto arr = new Vector3D[SEED_COUNT];
 		double fullCircle = 2.0 * M_PI;
@@ -41,84 +43,147 @@ void WinGdiRender::drawFilledCircle(const Color& circleColor, const Vector2& ori
 		points[i].y = origin.y +  flSeesds[i].y * radius;
 	}
 	HBRUSH hBrush = CreateSolidBrush(circleColor.toRGB());
-	auto old = SelectObject(deviceContext, hBrush);
-	Polygon(deviceContext, points, SEED_COUNT);
-	DeleteObject(hBrush);
+	auto old = SelectObject(bufferContext, hBrush);
+	Polygon(bufferContext, points, SEED_COUNT);
+	DeleteObject(old);
 	delete[] points;
-	SelectObject(deviceContext, old);
 }
 void WinGdiRender::drawRect(Color fColor, Vector2 origin, Vector2 size, uintptr_t thickness)
 {
+	assert(bufferContext != nullptr && "back buffer nullptr");
 	HPEN hPen = CreatePen(PS_SOLID, thickness, fColor.toRGB()); 
-	auto old = SelectObject(this->deviceContext, hPen);
-	Rectangle(deviceContext, origin.x, origin.y, origin.x + size.x, origin.y + size.y);
-	DeleteObject(hPen);
-	SelectObject(deviceContext, old);
+	auto old = SelectObject(this->bufferContext, hPen);
+	Rectangle(bufferContext, origin.x, origin.y, origin.x + size.x, origin.y + size.y);
+	DeleteObject(old);
 }
 void WinGdiRender::drawRect(Color& fColor, int x0, int y0, size_t width, size_t height, uintptr_t thickness )
 {
+	assert(bufferContext != nullptr && "back buffer nullptr");
 	HPEN hPen = CreatePen(PS_SOLID, thickness, fColor.toRGB());
-	auto oldPen = SelectObject(this->deviceContext, hPen);
-	Rectangle(deviceContext, x0, y0, x0 + width, y0 + height);
-	DeleteObject(hPen);
-	SelectObject(deviceContext, oldPen);
+	auto oldPen = SelectObject(this->bufferContext, hPen);
+	Rectangle(bufferContext, x0, y0, x0 + width, y0 + height);
+	DeleteObject(oldPen);
 }
 void WinGdiRender::drawRect(Color& fColor, int x0, int y0, int width, int height, uintptr_t thickness)
 {
+	assert(bufferContext != nullptr && "back buffer nullptr");
 }
 void WinGdiRender::drawFilledRect(Color fColor, Vector2 origin, Vector2 size)
 {
+	assert(bufferContext != nullptr && "back buffer nullptr");
 	HBRUSH brush = CreateSolidBrush(fColor.toRGB()); 
-	auto oldBrush = SelectObject(this->deviceContext, brush);
-	Rectangle(deviceContext, origin.x, origin.y, origin.x + size.x, origin.y + size.y);
-	DeleteObject(brush);
-	SelectObject(deviceContext, oldBrush);
+	auto oldBrush = SelectObject(this->bufferContext, brush);
+	Rectangle(bufferContext, origin.x, origin.y, origin.x + size.x, origin.y + size.y);
+	DeleteObject(oldBrush);
 }
 
 void WinGdiRender::drawFilledRectWithOutline(Color fillColor, Color outlineColor, Vector2 origin, Vector2 size, uintptr_t thickness)
 {
+	assert(bufferContext != nullptr && "back buffer nullptr");
 	drawFilledRect(fillColor, origin, size);
 	drawRect(outlineColor, origin, size,thickness);
 }
 
 void WinGdiRender::drawText(const std::string& text, LPRECT lpRect)
 {
-	SetTextColor(deviceContext, RGB(255, 0, 0));
-	SetBkMode(deviceContext, TRANSPARENT);
+	assert(bufferContext != nullptr && "back buffer nullptr");
+	SetTextColor(bufferContext, RGB(255, 0, 0));
+	SetBkMode(bufferContext, TRANSPARENT);
 	char* buffer = new char[text.length()];
 	std::memcpy(buffer, text.c_str(), text.size());
-	DrawTextEx(deviceContext, buffer, text.length(), lpRect, DT_CENTER, NULL);
+	DrawTextEx(bufferContext, buffer, text.length(), lpRect, DT_CENTER, NULL);
 	delete[] buffer;
 }
 
 Vector2 WinGdiRender::getTextSize(const std::string& text)
 {
+	assert(bufferContext != nullptr && "back buffer nullptr");
 	char* buffer = new char[text.length()];
 	std::memcpy(buffer, text.c_str(), text.size());
 	SIZE rc = {};
-	GetTextExtentPoint32(deviceContext, buffer, text.length(), &rc);
+	GetTextExtentPoint32(bufferContext, buffer, text.length(), &rc);
 	delete[] buffer;
 	return Vector2(rc.cx,rc.cy);
 }
 
 void WinGdiRender::drawPolygon(const Color& mColor, POINT* points, int size, bool filled)
 {
+	assert(bufferContext != nullptr && "back buffer nullptr");
 	if (filled) {
 		HBRUSH hBrush = CreateSolidBrush(mColor.toRGB());
-		auto old = SelectObject(deviceContext, hBrush);
-		Polygon(deviceContext, points, size);
-		DeleteObject(hBrush);
-		SelectObject(deviceContext, old);
+		auto old = SelectObject(bufferContext, hBrush);
+		Polygon(bufferContext, points, size);
+		DeleteObject(old);
 	}
 	else {
 		HPEN hPen = CreatePen(PS_SOLID,1,	mColor.toRGB());
-		auto oldPen =  SelectObject(deviceContext, hPen);
-		HBRUSH oldBrush = (HBRUSH)SelectObject(deviceContext, GetStockObject(NULL_BRUSH));
-		Polyline(deviceContext, points, size);
-		DeleteObject(hPen);
-		SelectObject(deviceContext, oldBrush);
-		SelectObject(deviceContext, oldPen);
+		auto oldPen =  SelectObject(bufferContext, hPen);
+		HBRUSH oldBrush = (HBRUSH)SelectObject(bufferContext, GetStockObject(NULL_BRUSH));
+		Polyline(bufferContext, points, size);
+		DeleteObject(oldPen);
+		DeleteObject(oldBrush);
 	}
 }
+
+void WinGdiRender::startFrame()
+{
+	deviceLock.lock();
+	assert(bufferContext != nullptr && "bufferContext doesnt created");
+	auto old = SelectObject(bufferContext, buffer);
+	DeleteObject(old);
+}
+
+void WinGdiRender::endFrame()
+{
+	if (this->isShowFramesPerSecond) {
+		//left,top,right,bottom
+		RECT rc = { 600,500,800,600 };
+		this->drawText(std::to_string(calcedFps), &rc);
+	}
+
+	assert(bufferContext != nullptr && "bufferContext doesnt created");
+	deviceLock.unlock();
+	auto now = GetTickCount64();
+	if (GetTickCount64() > lastCalcFrom + 1000) {
+		calcedFps = fps;
+		fps = 0u;
+		lastCalcFrom = now;
+	}
+	else {
+		fps++;
+	}
+}
+
+void WinGdiRender::onFrame()
+{
+	deviceLock.lock();
+	BitBlt(deviceContext, 0, 0, screenSize.x, screenSize.y, bufferContext, 0, 0, SRCCOPY);
+	deviceLock.unlock();
+}
+
+void WinGdiRender::onWindowChangeSize()
+{
+	deviceLock.lock();
+	if (this->bufferContext != nullptr) {
+		ReleaseDC(appState.windowHWND, this->bufferContext);
+		DeleteDC(this->bufferContext);
+		bufferContext = nullptr;
+	}
+	if (this->buffer != nullptr) {
+		DeleteObject(this->buffer);
+		buffer = nullptr;
+	}
+	this->bufferContext = CreateCompatibleDC(deviceContext);
+	this->buffer = CreateCompatibleBitmap(this->deviceContext, screenSize.x, screenSize.y);
+	deviceLock.unlock();
+}
+
+void WinGdiRender::startShowFPS(FpsPosition position)
+{
+	this->isShowFramesPerSecond = true;
+	//calc the origin of posiiton
+}
+
+
 
 

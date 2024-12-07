@@ -150,6 +150,7 @@
     <ClInclude Include="EarthBody.hpp" />
     <ClInclude Include="ICheckBox.hpp" />
     <ClInclude Include="IRender.h" />
+    <ClInclude Include="IRenderStat.h" />
     <ClInclude Include="LayoutParameter.hpp" />
     <ClInclude Include="LinearLayout.hpp" />
     <ClInclude Include="ParentView.hpp" />

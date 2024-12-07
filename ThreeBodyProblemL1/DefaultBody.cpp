@@ -2,7 +2,7 @@
 #include "UniverseCmd.hpp"
 #include "IRender.h"
 #define DEFAULT_RADIUS 5.0F
-#define DEFAULT_HISTORY_TICKS 64u
+#define DEFAULT_HISTORY_TICKS 512u
 void DefaultBody::update(float elapsedTimeFromPrevUpdate)
 {
     std::vector<DefaultBody*> bodies = mCmdPtr->mBodies;

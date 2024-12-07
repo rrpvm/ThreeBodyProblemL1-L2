@@ -68,9 +68,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="IRender.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -130,6 +127,12 @@
     </ClInclude>
     <ClInclude Include="EarthBody.hpp">
       <Filter>Файлы заголовков\tbp</Filter>
+    </ClInclude>
+    <ClInclude Include="IRender.h">
+      <Filter>Файлы заголовков\render</Filter>
+    </ClInclude>
+    <ClInclude Include="IRenderStat.h">
+      <Filter>Файлы заголовков\render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

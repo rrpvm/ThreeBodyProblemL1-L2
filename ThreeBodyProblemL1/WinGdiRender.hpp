@@ -2,11 +2,15 @@
 #include "Color.h"
 #include "Vector2.hpp"
 #include "IRender.h"
+#include "IRenderStat.h"
 #include "Windows.h"
-
-class WinGdiRender : public IRender {
+#include <mutex>
+class WinGdiRender : public IRender,public IRenderStat {
 private:
-	HDC deviceContext;
+	HDC deviceContext{ nullptr };
+	HDC bufferContext{ nullptr };
+	HBITMAP buffer{ nullptr };
+	std::mutex deviceLock;
 public:
 	WinGdiRender(HDC _deviceContext) {
 		this->deviceContext = _deviceContext;
@@ -22,6 +26,11 @@ public:
 	virtual void drawText(const std::string& text, LPRECT lpRect) override;
 	virtual Vector2 getTextSize(const std::string& text) override;
 	virtual void drawPolygon(const Color& mColor, POINT* points, int size, bool filled) override;
+	virtual void startFrame();
+	virtual void endFrame();
+	virtual void onFrame();
+	virtual void onWindowChangeSize();
+	virtual void startShowFPS(FpsPosition position);
 private:
 	
 };

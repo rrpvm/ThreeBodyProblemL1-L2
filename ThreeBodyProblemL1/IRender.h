@@ -7,11 +7,12 @@ protected:
 	Vector2 screenSize;
 	Color bgColor = Color(255, 255, 255, 255);
 public:
-	~IRender() {
+	virtual ~IRender() {
 
 	}
 	void setScreenSize(const Vector2& screenDimension) {
 		this->screenSize = screenDimension;
+		onWindowChangeSize();
 	}
 	int getScreenWidth() {
 		return screenSize.x;
@@ -33,4 +34,8 @@ public:
 	virtual void drawText(const std::string& text, LPRECT lpRect) = 0;
 	virtual Vector2 getTextSize(const std::string& text) = 0;
 	virtual void drawPolygon(const Color& mColor, POINT* points, int size, bool filled) = 0;
+	virtual void startFrame() = 0;
+	virtual void endFrame() = 0;
+	virtual void onFrame() = 0;
+	virtual void onWindowChangeSize() = 0;
 };
