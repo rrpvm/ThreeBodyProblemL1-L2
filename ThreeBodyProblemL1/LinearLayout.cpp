@@ -85,14 +85,57 @@ void LinearLayout::onMeasure()
 	//second iteration
 	uintptr_t resultWidth = 0u;
 	uintptr_t resultHeight = 0u;
-
+	uintptr_t nonWeightViewsCount = 0u;
+	//считаем для НЕ-весовых в первую очередь.
 	for (const auto& child : mViews) {
+		if (mOrientation == HORIZONTAL) {
+			if (child->widthSize == ViewSizeSpec::MATCH_PARENT)continue;
+			child->measure(child->measuredWidth, child->measuredHeight);
+			resultWidth += child->measuredWidth;
+			resultHeight = max(resultHeight, child->measuredHeight);
+			nonWeightViewsCount++;
+		}
+		else {
+			if (child->heightSize == ViewSizeSpec::MATCH_PARENT)continue;
+			child->measure(child->measuredWidth, child->measuredHeight);
+			resultWidth = max(child->measuredWidth,resultWidth);
+			resultHeight += child->measuredHeight;
+			nonWeightViewsCount++;
+		}
+	}
+	//считаем для ВЕСОВЫХ
+	if (nonWeightViewsCount != mViews.size()) {
+		auto weightViewsWidth = (parentWidthSpec - resultWidth) / (mViews.size() - nonWeightViewsCount);
+		auto weightViewsHeight = (parentHeightSpec - resultHeight) / (mViews.size() - nonWeightViewsCount);
+		for (const auto& child : mViews) {
+			if (mOrientation == HORIZONTAL) {
+				if (child->widthSize != ViewSizeSpec::MATCH_PARENT)continue;
+				uintptr_t childWidthSpec = weightViewsWidth;
+				uintptr_t childHeightSpec = (child->heightSize == ViewSizeSpec::MATCH_PARENT) ? parentHeightSpec : child->measuredHeight;
+				child->measure(childWidthSpec, childHeightSpec);
+				resultWidth = resultWidth + child->measuredWidth;
+				resultHeight = max(resultHeight, child->measuredHeight);
+			}
+			else {
+				if (child->heightSize != ViewSizeSpec::MATCH_PARENT)continue;
+				uintptr_t childWidthSpec = (child->widthSize == ViewSizeSpec::MATCH_PARENT) ? parentWidthSpec : child->measuredHeight;
+				uintptr_t childHeightSpec = weightViewsHeight;
+				child->measure(childWidthSpec, childHeightSpec);
+				resultWidth = max(child->measuredWidth, resultWidth);
+				resultHeight += child->measuredHeight;
+			}
+		}
+	}
+	
+	
+
+	/*for (const auto& child : mViews) {
 		uintptr_t childWidthSpec = (child->widthSize == ViewSizeSpec::MATCH_PARENT) ? parentWidthSpec : child->measuredWidth;
 		uintptr_t childHeightSpec = (child->heightSize == ViewSizeSpec::MATCH_PARENT) ? parentHeightSpec : child->measuredHeight;
 		child->measure(childWidthSpec, childHeightSpec);
 		resultWidth = (mOrientation == VERTICAL) ? max(resultWidth, child->measuredWidth) : resultWidth + child->measuredWidth;
 		resultHeight = (mOrientation == VERTICAL) ? resultHeight + child->measuredHeight : max(resultHeight, child->measuredHeight);
-	}
+	}*/
 	if (widthSize == ViewSizeSpec::MATCH_PARENT) {
 		resultWidth = parentWidthSpec;
 	}
