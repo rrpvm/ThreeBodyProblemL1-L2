@@ -12,6 +12,8 @@ public:
 
 	};
 	void showViewIndex(int index);
+protected:
+	virtual void dispatchMouseEvent(const MouseEvent& mouseEvent) override;
 	virtual void onMeasure() override;
 	virtual void onLayout() override;
 private:

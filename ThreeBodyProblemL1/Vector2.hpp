@@ -26,6 +26,9 @@ public:
 	Vector2 operator-(const Vector2& sum) {
 		return Vector2(this->x - sum.x, this->y - sum.y);
 	}
+	Vector2 operator*(float fl) {
+		return Vector2(this->x *fl, this->y *fl);
+	}
 	void operator-=(Vector2& sum) {
 		this->x -= sum.x;
 		this->y -= sum.y;

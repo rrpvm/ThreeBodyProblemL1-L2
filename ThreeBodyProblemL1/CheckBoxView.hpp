@@ -9,6 +9,7 @@ private:
 	Color checkedColor{COLORS::PRIMARY};
 	Color uncheckedColor{COLORS::SECONDARY_PRIMARY};
 	Color textColor{ COLORS::ON_SURFACE };
+	Color activeTextColor{ COLORS::ON_PRIMARY };
 	Vector2 textSize{ 0,0 };
 	uintptr_t checkboxSize{ 20u };
 	std::function<void(bool)> mCheckboxStateListener;

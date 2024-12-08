@@ -11,6 +11,6 @@ void ApplicationState::applyConfig()
             renderStat->startShowFPS(FpsPosition::TOP_RIGHT);
         }
         else renderStat->stopShowFPS();
-       
+        this->applicationUniverse->setPausedSimulating(appConfig.pauseUniverse);
     }
 }

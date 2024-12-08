@@ -16,6 +16,11 @@ void Universe::runSimulation()
 	this->isRunning = true;
 	mCmd.setBodies(mBodies);
 	while (isRunning) {
+		if (isPauseSimulating) {
+			this->mPreparedCallback();
+			std::this_thread::sleep_for(std::chrono::microseconds(LOGIC_TARGET_DELAY));
+			continue;
+		}
 		for (DefaultBody* body : mBodies) {
 			body->update(mCmd.deltaTime);
 		}
@@ -29,4 +34,9 @@ void Universe::runSimulation()
 void Universe::stopSimulation()
 {
 	isRunning = false;
+}
+
+void Universe::setPausedSimulating(bool simulation)
+{
+	this->isPauseSimulating = simulation;
 }

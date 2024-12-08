@@ -6,6 +6,19 @@ void ViewPager::showViewIndex(int index)
 	onLayout();
 }
 
+void ViewPager::dispatchMouseEvent(const MouseEvent& mouseEvent)
+{
+	if (onInterceptMouseEvent(mouseEvent))return;
+	if (selectViewIndex == -1 || mViews.empty()) {
+		return BaseView::dispatchMouseEvent(mouseEvent);
+	}
+	BaseView* currView = mViews[selectViewIndex];
+	for (auto view : mViews) {
+		if (view != currView)continue;
+		view->dispatchMouseEvent(mouseEvent);
+	}
+}
+
 void ViewPager::onMeasure()
 {
 	uintptr_t totalWidth = 0;

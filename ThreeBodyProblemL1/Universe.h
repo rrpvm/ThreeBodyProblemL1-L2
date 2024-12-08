@@ -6,6 +6,7 @@ class Universe {
 private:
 	double universeLifetime{ 0.0 };
 	bool isRunning{ false };
+	bool isPauseSimulating{ false };
 	std::vector<DefaultBody*> mBodies;
 	UniverseCmd mCmd;
 	UniversePreparedCallback mPreparedCallback = nullptr;
@@ -16,6 +17,7 @@ public:
 	void addBody(DefaultBody* body);
 	void runSimulation();
 	void stopSimulation();
+	void setPausedSimulating(bool simulation);
 	void setOnReadyFrameSimulation(UniversePreparedCallback callback) {
 		mPreparedCallback = callback;
 	}

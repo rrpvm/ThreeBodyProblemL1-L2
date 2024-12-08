@@ -7,6 +7,7 @@ bool CheckBoxView::onMouseEvent(const MouseEvent& mouseEvent)
 	bool isInPoint = Utils::isPointInBB({ mouseEvent.x,mouseEvent.y }, getAbsoluteOrigin(), getSize());
 	if (isInPoint && mouseEvent.isMouseClickedNow) {
 		onClicked();
+		return true;
 	}
 
 	return false;
@@ -22,7 +23,7 @@ void CheckBoxView::draw(IRender* renderer)
 	//lower layer
 	auto cbSize = Vector2(checkboxSize, checkboxSize);
 	renderer->drawFilledRect(this->checked ? checkedColor : uncheckedColor, renderPosition, cbSize);
-	
+
 	//upper layer
 	static int borderThickness = 2;
 	auto borderPosition = renderPosition + Vector2(borderThickness / 2, borderThickness / 2);
@@ -32,8 +33,8 @@ void CheckBoxView::draw(IRender* renderer)
 	//text
 	Vector2 textRenderPosition = textPosition + mGlobalOffset;
 	auto centerY = mGlobalOffset.y + (viewBound.left.y + (viewBound.right.y - checkboxPaddingEnd - viewBound.left.y) / 2);
-	RECT rc = { textRenderPosition.x,centerY - textSize.y/2, textRenderPosition.x + textSize.x, centerY+textSize.y/2 };
-	renderer->drawText(this->label,this->textColor, &rc);
+	RECT rc = { textRenderPosition.x,centerY - textSize.y / 2, textRenderPosition.x + textSize.x, centerY + textSize.y / 2 };
+	renderer->drawText(this->label, checked ? activeTextColor : this->textColor, &rc);
 }
 
 void CheckBoxView::onAttachedToWindow(Window* wnd)

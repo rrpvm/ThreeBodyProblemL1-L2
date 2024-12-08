@@ -33,6 +33,7 @@ namespace COLORS {
 	const static Color ORANGE = Color(255, 255, 165, 0);
 	const static Color PRIMARY = ORANGE;
 	const static Color PRIMARY_VARIANT = ORANGE + Color(0,0,15,15);
+	const static Color ON_PRIMARY = Color(255,255,255,255);
 	const static Color SURFACE = Color(255,33,33,33);//bg
 	const static Color SURFACE_CONTRAST = Color(255,11,11,11);//borders
 	const static Color ON_SURFACE = Color(255,188,188,188);//text

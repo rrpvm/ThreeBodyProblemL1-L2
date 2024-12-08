@@ -121,7 +121,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 }
 void __stdcall onFpsSettingsChanged (bool arg) {
     appState.onFpsConfigChange(arg);
-
+}
+void __stdcall onUniversePauseSettingsChanged(bool arg) {
+    appState.onPauseUniverseConfigChange(arg);
 }
 void scene1(Window* window) {
     window->setBgColor(COLORS::SURFACE);
@@ -178,14 +180,24 @@ void scene1(Window* window) {
         vp->addView(fragmentManagement);
         vp->addView(fragmentSettigs);
         {
+            //fps
             LinearLayout* fpsLine = new LinearLayout("fpsCheckboxContaiener", LinearLayoutOrientation::HORIZONTAL, ViewSizeSpec::WRAP_CONTENT, ViewSizeSpec::WRAP_CONTENT);
             fpsLine->addView(new SpacerView("#cbFpsPadding",8,0));
-
-            CheckBoxView* fpsCheckbox = new CheckBoxView("fpsCheckbox","show fps", 20u);
+            CheckBoxView* fpsCheckbox = new CheckBoxView("fpsCheckbox", "show fps", 20u);
+            //pause universe
+            LinearLayout* pauseLine = new LinearLayout("pauseLineContainer", LinearLayoutOrientation::HORIZONTAL, ViewSizeSpec::WRAP_CONTENT, ViewSizeSpec::WRAP_CONTENT);
+            pauseLine->addView(new SpacerView("#cbFpsPadding", 8, 0));
+            CheckBoxView* pauseUniverseCheckbox = new CheckBoxView("#pauseUniverseCheckbox", "pause universe", 20u);
+            //listeners
             fpsCheckbox->onCheckboxStateChanged(onFpsSettingsChanged);
+            pauseUniverseCheckbox->onCheckboxStateChanged(onUniversePauseSettingsChanged);
+            //view child
+            pauseLine->addView(pauseUniverseCheckbox);
             fpsLine->addView(fpsCheckbox);
+            //containers
             fragmentSettigs->addView(new SpacerView("#fpsContainerTopPadding", 0, 16));
             fragmentSettigs->addView(fpsLine);
+            fragmentSettigs->addView(pauseLine);
         }
       
         mGuiRoot->addView(new SpacerView("#underTabPadding", 0, 8));

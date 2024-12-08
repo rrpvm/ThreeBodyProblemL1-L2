@@ -33,6 +33,10 @@ public:
 		this->appConfig.showFPS = arg;
 		applyConfig();
 	}
+	void onPauseUniverseConfigChange(bool arg){
+		this->appConfig.pauseUniverse = arg;
+		applyConfig();
+	}
 private:
 	void applyConfig();
 };
