@@ -31,6 +31,9 @@
     <Filter Include="Исходные файлы\tbp">
       <UniqueIdentifier>{35592028-0d39-4162-97e2-b566b09b3759}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\utils">
+      <UniqueIdentifier>{7e4644e9-c166-4496-9c87-c3d740f66bb1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ThreeBodyProblemL1.cpp">
@@ -64,6 +67,15 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="SunBody.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInputController.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiState.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -133,6 +145,18 @@
     </ClInclude>
     <ClInclude Include="IRenderStat.h">
       <Filter>Файлы заголовков\render</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseEvent.hpp">
+      <Filter>Файлы заголовков\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInputController.hpp">
+      <Filter>Файлы заголовков\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiState.hpp">
+      <Filter>Файлы заголовков\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.hpp">
+      <Filter>Файлы заголовков\utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

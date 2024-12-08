@@ -18,8 +18,9 @@ void LinearLayout::addView(BaseView* mView)
 }
 void LinearLayout::draw(IRender* renderer)
 {
+
 	if (mBackgroundColor != nullptr) {
-		renderer->drawFilledRect(*mBackgroundColor, this->viewBound.left, {(int)this->mViewLayoutParams->width,(int)this->mViewLayoutParams->height});
+		renderer->drawFilledRect(*mBackgroundColor, this->viewBound.left + mGlobalOffset, {(int)this->mViewLayoutParams->width,(int)this->mViewLayoutParams->height});
 	}
 	for (const auto& view : mViews) {
 		if (view == nullptr)continue;

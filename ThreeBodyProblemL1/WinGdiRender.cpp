@@ -7,7 +7,7 @@
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
 #endif
-#define SEED_COUNT 128.0F
+#define SEED_COUNT 256.0F
 void WinGdiRender::clear()
 {
 	static Vector2 origin{ 0,0 };
@@ -87,7 +87,7 @@ void WinGdiRender::drawFilledRectWithOutline(Color fillColor, Color outlineColor
 void WinGdiRender::drawText(const std::string& text, LPRECT lpRect)
 {
 	assert(bufferContext != nullptr && "back buffer nullptr");
-	SetTextColor(bufferContext, RGB(255, 0, 0));
+	SetTextColor(bufferContext, RGB(255, 255, 0));
 	SetBkMode(bufferContext, TRANSPARENT);
 	char* buffer = new char[text.length()];
 	std::memcpy(buffer, text.c_str(), text.size());

@@ -14,6 +14,12 @@ public:
 
 	}
 	virtual void addView(BaseView* mView) = 0;
+	virtual void onGlobalOffsetChanged(const Vector2& globalOffsetChanged) {
+		this->mGlobalOffset = globalOffsetChanged;
+		for (auto view : mViews) {
+			view->onGlobalOffsetChanged(globalOffsetChanged);
+		}
+	}
 private:
 
 };

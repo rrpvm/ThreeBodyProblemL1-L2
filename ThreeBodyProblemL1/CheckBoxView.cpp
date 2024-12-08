@@ -5,11 +5,12 @@ void CheckBoxView::draw(IRender* renderer)
 {
 	int height = (int)measuredHeight;
 	int width = (int)measuredWidth;
-	
-	renderer->drawFilledRect(this->checked ? checkedColor : uncheckedColor, this->viewBound.left, { width,height });
-	renderer->drawRect(Color(255, 0, 0, 0), this->viewBound.left, { width,height });
-	RECT rect = viewBound.toRect();
-	renderer->drawText(std::string("вау"), &rect);
+	Vector2 renderPosition = this->viewBound.left + mGlobalOffset;
+	renderer->drawFilledRect(this->checked ? checkedColor : uncheckedColor, renderPosition, { width,height });
+	renderer->drawRect(Color(255, 0, 0, 0), renderPosition, { width,height });
+
+	RECT drawRect = (viewBound + mGlobalOffset).toRect();
+	renderer->drawText(std::string("вау"), &drawRect);
 	
 }
 

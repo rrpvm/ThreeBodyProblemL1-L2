@@ -134,11 +134,14 @@
     <ClCompile Include="CheckBoxView.cpp" />
     <ClCompile Include="DefaultBody.cpp" />
     <ClCompile Include="EarthBody.cpp" />
+    <ClCompile Include="GuiState.cpp" />
     <ClCompile Include="LinearLayout.cpp" />
     <ClCompile Include="SpacerView.cpp" />
     <ClCompile Include="SunBody.cpp" />
     <ClCompile Include="ThreeBodyProblemL1.cpp" />
     <ClCompile Include="Universe.cpp" />
+    <ClCompile Include="UserInputController.cpp" />
+    <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WinGdiRender.cpp" />
   </ItemGroup>
@@ -148,11 +151,13 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="DefaultBody.hpp" />
     <ClInclude Include="EarthBody.hpp" />
+    <ClInclude Include="GuiState.hpp" />
     <ClInclude Include="ICheckBox.hpp" />
     <ClInclude Include="IRender.h" />
     <ClInclude Include="IRenderStat.h" />
     <ClInclude Include="LayoutParameter.hpp" />
     <ClInclude Include="LinearLayout.hpp" />
+    <ClInclude Include="MouseEvent.hpp" />
     <ClInclude Include="ParentView.hpp" />
     <ClInclude Include="BoundRect.hpp" />
     <ClInclude Include="Renderable.h" />
@@ -161,6 +166,8 @@
     <ClInclude Include="Universe.h" />
     <ClInclude Include="UniverseCmd.hpp" />
     <ClInclude Include="ApplicationState.h" />
+    <ClInclude Include="UserInputController.hpp" />
+    <ClInclude Include="Utils.hpp" />
     <ClInclude Include="Vector2.hpp" />
     <ClInclude Include="Vector3D.hpp" />
     <ClInclude Include="Window.hpp" />

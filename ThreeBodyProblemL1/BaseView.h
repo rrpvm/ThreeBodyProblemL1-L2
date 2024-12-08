@@ -19,6 +19,7 @@ protected:
 	BaseView* mParentView{ nullptr };
 	uintptr_t width{ 0u }, height{ 0u };
 	BoundRect viewBound;
+	Vector2 mGlobalOffset{ 0,0 };
 protected:
 	Color* mBackgroundColor{ nullptr };
 public:
@@ -64,8 +65,14 @@ public:
 	virtual void measure(uintptr_t availW, uintptr_t availH) = 0;
 	//callback when layout view. only for parentview
 	virtual void onLayout() = 0;
-
+	//window changed position
+	virtual void onGlobalOffsetChanged(const Vector2& globalOffsetChanged) {
+		this->mGlobalOffset = globalOffsetChanged;
+	}
+	//recalc view
 	void requestLayout();
+
+
 	void onAttachedToView(BaseView* view) {
 		this->mParentView = view;
 		attachedWindowSize = view->attachedWindowSize;
@@ -76,6 +83,7 @@ public:
 	void setBoundRect(const BoundRect& mBound) {
 		this->viewBound = mBound;
 	}
+	
 public:
 	void setBackgroundColor(Color* mColor);//ui bg color
 	virtual ~BaseView() {

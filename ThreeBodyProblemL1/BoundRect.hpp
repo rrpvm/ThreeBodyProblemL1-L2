@@ -19,4 +19,10 @@ public:
 	Vector2 size() {
 		return { right.x - left.x, right.y - left.y };
 	}
+	BoundRect operator+(const Vector2& offset) {
+		auto result = BoundRect();
+		result.left = left + offset;
+		result.right = right + offset;
+		return result;
+	}
 };

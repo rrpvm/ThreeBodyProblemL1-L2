@@ -13,10 +13,12 @@
 #include "EarthBody.hpp"
 #include "SunBody.hpp"
 #include "IRenderStat.h"
+#include "UserInputController.hpp"
+#include "GuiState.hpp"
+
 #define WND_NAME "Three body problem solve"
 ApplicationState appState = ApplicationState();
-Window* guiWindow = nullptr;
-
+UserInputController* userInput = new UserInputController();
 void scene1(Window* window);
 void onTBPCallback();
 void threeBodyProblem();
@@ -44,11 +46,18 @@ int WindowApplication(HINSTANCE hInstance, int nCmdShow) {
     );
 
     if (!appState.windowHWND) return 0;
-    guiWindow = new Window(640, 480, { 255,255,255,255 });
+   Window* guiWindow = new Window(640, 480, { 255,255,255,255 });
+
+    std::thread delayed([&]() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+        guiWindow->setOrigin({ 100,100 });
+        });
+
+
     scene1(guiWindow);
     threeBodyProblem();
     ShowWindow(appState.windowHWND, nCmdShow);
-    MSG msg = {};   
+    MSG msg = {};
     // Цикл обработки сообщений
     while (GetMessage(&msg, NULL, 0, 0)) {
         TranslateMessage(&msg);
@@ -56,7 +65,7 @@ int WindowApplication(HINSTANCE hInstance, int nCmdShow) {
     }
     appState.applicationUniverse->stopSimulation();
     delete guiWindow;
-  //  simulationWorker.join();
+    //  simulationWorker.join();
     return 0;
 }
 
@@ -81,6 +90,21 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         }
         break;
     }
+    case WM_MOUSEMOVE:
+    {
+        userInput->onMoveEvent(wParam,lParam);
+        break;
+    }
+    case WM_LBUTTONDOWN:
+    {
+        userInput->onClickDownEvent();
+        break;
+    }
+    case WM_LBUTTONUP:
+    {
+        userInput->onClickUpEvent();
+        break;
+    }
     case WM_CREATE:
     {
         HDC windowDeviceContext = GetDC(hwnd);
@@ -90,7 +114,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         if (dynamic_cast<IRenderStat*>(appState.renderer.get())) {
             dynamic_cast<IRenderStat*>(appState.renderer.get())->startShowFPS(FpsPosition::TOP_RIGHT);
         }
-  
+        userInput->setOnEventCallback((onEventCallback)defaultGuiProcessEvent);
         break;
     }
     case WM_PAINT: {
@@ -125,7 +149,7 @@ void onTBPCallback() {
     renderer->startFrame();
     renderer->clear();
     for (DefaultBody* fBody : appState.mBodies) {
-        fBody->draw(appState.renderer.get());
+     //   fBody->draw(appState.renderer.get());
     }
     static RECT tickRect = { 15,0,80,150 };
     static RECT timeRect = { 15,30,180,150 };
@@ -133,7 +157,10 @@ void onTBPCallback() {
     std::string timeText = "time: " + std::to_string(appState.applicationUniverse->getCmd()->currentTick * appState.applicationUniverse->getCmd()->deltaTime) + " seconds";
     renderer->drawText(tickText, &tickRect);
     renderer->drawText(timeText, &timeRect);
-   // renderer->drawWindow(*guiWindow); 
+
+    for (Window* window : gui->getWindowsToRender()) {
+        renderer->drawWindow(*window);
+    }
     renderer->endFrame();
     InvalidateRect(appState.windowHWND, NULL, true);
 };
