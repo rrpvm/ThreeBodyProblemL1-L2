@@ -22,5 +22,6 @@ public:
 	unsigned long toRGB() const {
 		return ((red) | (green << 8) | (blue << 16));
 	}
-
 };
+static Color WHITE = Color(255, 255, 255, 255);
+static Color BLACK = Color(255, 0, 0, 0);

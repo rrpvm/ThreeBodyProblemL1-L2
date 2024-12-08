@@ -30,14 +30,20 @@ void Window::processMouseEvent(const MouseEvent& mouseEvent)
 	if (mouseEvent.isMouseUnpressedNow) {
 		isDragging = false;
 	}
-	if (isDragging) {
+	if (isDragging && (mouseEvent.dx != 0 || mouseEvent.dy != 0) && mouseEvent.isMouseButtonPressed) {
 		this->setOrigin({ origin.x + mouseEvent.dx, origin.y + mouseEvent.dy });
+	}
+	else {
+
 	}
 }
 
 void Window::draw(IRender* renderer)
 {
+	assert(this->mParentView != nullptr && "did you attach the view to window?");
 	renderer->drawFilledRect(this->mBackgroundColor, this->origin, this->size);
+	renderer->drawRect(BLACK, this->origin, this->size,2);
 	if (mParentView == nullptr)return;
 	mParentView->draw(renderer);
 }
+

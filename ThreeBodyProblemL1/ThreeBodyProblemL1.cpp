@@ -15,10 +15,11 @@
 #include "IRenderStat.h"
 #include "UserInputController.hpp"
 #include "GuiState.hpp"
+#include "OutlinedButtonView.hpp"
 
 #define WND_NAME "Three body problem solve"
 ApplicationState appState = ApplicationState();
-UserInputController* userInput = new UserInputController();
+
 void scene1(Window* window);
 void onTBPCallback();
 void threeBodyProblem();
@@ -46,14 +47,7 @@ int WindowApplication(HINSTANCE hInstance, int nCmdShow) {
     );
 
     if (!appState.windowHWND) return 0;
-   Window* guiWindow = new Window(640, 480, { 255,255,255,255 });
-
-    std::thread delayed([&]() {
-        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-        guiWindow->setOrigin({ 100,100 });
-        });
-
-
+    Window* guiWindow = new Window(640, 480, { 255,255,255,255 });
     scene1(guiWindow);
     threeBodyProblem();
     ShowWindow(appState.windowHWND, nCmdShow);
@@ -92,17 +86,17 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     }
     case WM_MOUSEMOVE:
     {
-        userInput->onMoveEvent(wParam,lParam);
+        appState.userInput->onMoveEvent(wParam, lParam);
         break;
     }
     case WM_LBUTTONDOWN:
     {
-        userInput->onClickDownEvent();
+        appState.userInput->onClickDownEvent();
         break;
     }
     case WM_LBUTTONUP:
     {
-        userInput->onClickUpEvent();
+        appState.userInput->onClickUpEvent();
         break;
     }
     case WM_CREATE:
@@ -114,7 +108,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         if (dynamic_cast<IRenderStat*>(appState.renderer.get())) {
             dynamic_cast<IRenderStat*>(appState.renderer.get())->startShowFPS(FpsPosition::TOP_RIGHT);
         }
-        userInput->setOnEventCallback((onEventCallback)defaultGuiProcessEvent);
+        appState.userInput->setOnEventCallback((onEventCallback)defaultGuiProcessEvent);
         break;
     }
     case WM_PAINT: {
@@ -127,21 +121,17 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     }
 }
 void scene1(Window* window) {
-    LinearLayout* mGuiRoot = new LinearLayout("mainRoot", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
-    mGuiRoot->setBackgroundColor(new Color(255, 33, 33, 33));
-    CheckBoxView* cbv1 = new CheckBoxView("first checkbox", 40, 40);
-    CheckBoxView* cbv2 = new CheckBoxView("second checkbox", 40, 40);
-    LinearLayout* secondRoot = new LinearLayout("secondRoot", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
-    secondRoot->setBackgroundColor(new Color(255, 99, 99, 99));
-    CheckBoxView* cbv3 = new CheckBoxView("third checkbox", 40, 40);
+    window->setBgColor(Color(255, 77, 77, 77));
+    LinearLayout* mGuiRoot = new LinearLayout("mainRoot", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::MATCH_PARENT);
+    mGuiRoot->setBackgroundColor(new Color(255, 77, 77, 77));//мы фартовые ребята
 
+    LinearLayout* mTabsHeader = new LinearLayout("tabs", LinearLayoutOrientation::HORIZONTAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
+    OutlinedButtonView* mControlBtn = new OutlinedButtonView("tab1", "Управление", 4u, Color(255, 255, 255, 255), Color(255, 255, 0, 0), ViewSizeSpec::WRAP_CONTENT, ViewSizeSpec::WRAP_CONTENT);
+    OutlinedButtonView* mSettingsBtn = new OutlinedButtonView("tab1", "Настройки", 4u, Color(255, 255, 255, 255), Color(255, 255, 0, 0), ViewSizeSpec::WRAP_CONTENT, ViewSizeSpec::WRAP_CONTENT);
 
-    mGuiRoot->addView(new SpacerView("spacerView", 0, 80));
-    mGuiRoot->addView(cbv1);
-    mGuiRoot->addView(cbv2);
-    secondRoot->addView(new SpacerView("spacerView", 0, 50));
-    secondRoot->addView(cbv3);
-    mGuiRoot->addView(secondRoot);
+    mTabsHeader->addView(mControlBtn);
+    mTabsHeader->addView(mSettingsBtn);
+    mGuiRoot->addView(mTabsHeader);
     window->setView(mGuiRoot);
 }
 void onTBPCallback() {

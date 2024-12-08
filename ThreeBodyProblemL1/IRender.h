@@ -2,6 +2,9 @@
 #include "Color.h"
 #include "Vector2.hpp"
 #include "Window.hpp"
+enum class TextAlign {
+	START, CENTER, END
+};
 class IRender {
 protected:
 	Vector2 screenSize;
@@ -31,7 +34,7 @@ public:
 	virtual void drawRect(Color& fColor, int x0, int y0, int xEnd, int yEnd, uintptr_t thickness = 1u) = 0;
 	virtual void drawFilledRect(Color fColor,Vector2 origin,Vector2 size) = 0;
 	virtual void drawFilledRectWithOutline(Color fillColor,Color outlineColor,Vector2 origin,Vector2 size, uintptr_t thickness = 1u) = 0;
-	virtual void drawText(const std::string& text, LPRECT lpRect) = 0;
+	virtual void drawText(const std::string& text, LPRECT lpRect, TextAlign textAlign = TextAlign::CENTER) = 0;
 	virtual Vector2 getTextSize(const std::string& text) = 0;
 	virtual void drawPolygon(const Color& mColor, POINT* points, int size, bool filled) = 0;
 	virtual void startFrame() = 0;

@@ -14,7 +14,7 @@ enum class ViewSizeSpec {
 //onAttach->onMeasure->onLayout->onDraw();
 //requestLayout() отправляет цепь в onMeasure
 //invalidate() -> onDraw();
-class BaseView :IRenderable {
+class BaseView :protected IRenderable {
 protected:
 	BaseView* mParentView{ nullptr };
 	uintptr_t width{ 0u }, height{ 0u };

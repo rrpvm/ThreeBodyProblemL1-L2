@@ -132,10 +132,13 @@
   <ItemGroup>
     <ClCompile Include="BaseView.cpp" />
     <ClCompile Include="CheckBoxView.cpp" />
+    <ClCompile Include="Color.cpp" />
     <ClCompile Include="DefaultBody.cpp" />
     <ClCompile Include="EarthBody.cpp" />
     <ClCompile Include="GuiState.cpp" />
     <ClCompile Include="LinearLayout.cpp" />
+    <ClCompile Include="OutlinedButtonView.cpp" />
+    <ClCompile Include="Renderable.cpp" />
     <ClCompile Include="SpacerView.cpp" />
     <ClCompile Include="SunBody.cpp" />
     <ClCompile Include="ThreeBodyProblemL1.cpp" />
@@ -158,6 +161,7 @@
     <ClInclude Include="LayoutParameter.hpp" />
     <ClInclude Include="LinearLayout.hpp" />
     <ClInclude Include="MouseEvent.hpp" />
+    <ClInclude Include="OutlinedButtonView.hpp" />
     <ClInclude Include="ParentView.hpp" />
     <ClInclude Include="BoundRect.hpp" />
     <ClInclude Include="Renderable.h" />

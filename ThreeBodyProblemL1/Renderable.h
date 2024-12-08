@@ -1,4 +1,5 @@
 #pragma once
+#include "Vector2.hpp"
 class IRender;
 class IRenderable {
 public:
@@ -9,4 +10,5 @@ public:
 
 	}
 	virtual void draw(IRender* renderer) = 0;
+	Vector2 calcTextSize(const char* text);
 };

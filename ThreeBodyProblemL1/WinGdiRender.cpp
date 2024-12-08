@@ -84,7 +84,7 @@ void WinGdiRender::drawFilledRectWithOutline(Color fillColor, Color outlineColor
 	drawRect(outlineColor, origin, size,thickness);
 }
 
-void WinGdiRender::drawText(const std::string& text, LPRECT lpRect)
+void WinGdiRender::drawText(const std::string& text, LPRECT lpRect, TextAlign textAlign)
 {
 	assert(bufferContext != nullptr && "back buffer nullptr");
 	SetTextColor(bufferContext, RGB(255, 255, 0));
@@ -137,8 +137,29 @@ void WinGdiRender::endFrame()
 {
 	if (this->isShowFramesPerSecond) {
 		//left,top,right,bottom
-		RECT rc = { 600,500,800,600 };
-		this->drawText(std::to_string(calcedFps), &rc);
+		RECT rc;
+		std::string fpsString = std::to_string(calcedFps);
+		Vector2 textSize = this->getTextSize(fpsString);
+		switch (this->mFpsStatPositionOrient)
+			{
+		case FpsPosition::START: {
+			rc = { 0,0,textSize.x,textSize.y };
+			break;
+		}
+		case FpsPosition::TOP_RIGHT: {
+			rc = { screenSize.x - textSize.x,0,screenSize.x,textSize.y };
+			break;
+		}
+		case FpsPosition::BOT_LEFT: {
+			rc = { 0,screenSize.y - textSize.y,textSize.x,screenSize.y };
+			break;
+		}
+		case FpsPosition::END: {
+			rc = { screenSize.x - textSize.x,screenSize.y - textSize.y,screenSize.x,screenSize.y };
+			break;
+		}
+			}
+		this->drawText(fpsString, &rc);
 	}
 
 	assert(bufferContext != nullptr && "bufferContext doesnt created");
@@ -181,6 +202,7 @@ void WinGdiRender::onWindowChangeSize()
 void WinGdiRender::startShowFPS(FpsPosition position)
 {
 	this->isShowFramesPerSecond = true;
+	mFpsStatPositionOrient = position;
 	//calc the origin of posiiton
 }
 

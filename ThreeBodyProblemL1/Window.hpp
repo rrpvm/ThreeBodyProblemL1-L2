@@ -20,21 +20,23 @@ public:
 		uintptr_t _height,
 		Color backgroundColor
 	); 
-	Color getColor() const {
-		return this->mBackgroundColor;
+	~Window() {
+		//хоть кто-то когда-то этот код прочитает?
 	}
-	void setOrigin(const Vector2& origin) {
-		this->origin = origin;
-		mParentView->onGlobalOffsetChanged(origin);		
-	}
-	
 	void setView(ParentView* mView);
 	void processMouseEvent(const MouseEvent& mouseEvent);
 	virtual void draw(IRender* renderer);
+	void setOrigin(const Vector2& origin) {
+		this->origin = origin;
+		mParentView->onGlobalOffsetChanged(origin);
+	}
+	void setBgColor(const Color& bgColor) {
+		this->mBackgroundColor = bgColor;
+	}
+	Color getColor() const {
+		return this->mBackgroundColor;
+	}
 	const Vector2& getSize() {
 		return this->size;
-	}
-	~Window() {
-		
 	}
 };

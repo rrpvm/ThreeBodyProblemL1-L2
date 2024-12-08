@@ -16,6 +16,7 @@ public:
 		return fps;
 	}
 protected:
+	FpsPosition mFpsStatPositionOrient{ FpsPosition::TOP_RIGHT };
 	ULONGLONG lastCalcFrom = 0;
 	bool isShowFramesPerSecond = false;
 	uintptr_t fps{ 0 };
