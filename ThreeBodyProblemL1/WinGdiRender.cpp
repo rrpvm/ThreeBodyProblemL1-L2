@@ -52,9 +52,12 @@ void WinGdiRender::drawRect(Color fColor, Vector2 origin, Vector2 size, uintptr_
 {
 	assert(bufferContext != nullptr && "back buffer nullptr");
 	HPEN hPen = CreatePen(PS_SOLID, thickness, fColor.toRGB()); 
-	auto old = SelectObject(this->bufferContext, hPen);
+	auto oldPen = SelectObject(bufferContext, hPen);
+	HBRUSH oldBrush = (HBRUSH)SelectObject(bufferContext, GetStockObject(NULL_BRUSH));
 	Rectangle(bufferContext, origin.x, origin.y, origin.x + size.x, origin.y + size.y);
-	DeleteObject(old);
+	SelectObject(bufferContext, oldPen);
+	DeleteObject(hPen);
+	DeleteObject(oldBrush);
 }
 void WinGdiRender::drawRect(Color& fColor, int x0, int y0, size_t width, size_t height, uintptr_t thickness )
 {
@@ -71,10 +74,10 @@ void WinGdiRender::drawRect(Color& fColor, int x0, int y0, int width, int height
 void WinGdiRender::drawFilledRect(Color fColor, Vector2 origin, Vector2 size)
 {
 	assert(bufferContext != nullptr && "back buffer nullptr");
-	HBRUSH brush = CreateSolidBrush(fColor.toRGB()); 
-	auto oldBrush = SelectObject(this->bufferContext, brush);
-	Rectangle(bufferContext, origin.x, origin.y, origin.x + size.x, origin.y + size.y);
-	DeleteObject(oldBrush);
+	HBRUSH brush = CreateSolidBrush(fColor.toRGB());
+	RECT rc = { origin.x,origin.y ,origin.x + size.x, origin.y + size.y };
+	FillRect(bufferContext, &rc, brush);
+	DeleteObject(brush);
 }
 
 void WinGdiRender::drawFilledRectWithOutline(Color fillColor, Color outlineColor, Vector2 origin, Vector2 size, uintptr_t thickness)

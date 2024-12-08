@@ -20,6 +20,7 @@ public:
 			view->onGlobalOffsetChanged(globalOffsetChanged);
 		}
 	}
+	virtual bool onInterceptMouseEvent(const MouseEvent& mouseEvent) { return false; };//перехват из dispatchMouseEvent  -> если мы хотим остановить проброску ивентов ниже (false)-> спускаемся дальше
 private:
 
 };

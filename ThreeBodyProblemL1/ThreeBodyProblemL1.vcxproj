@@ -138,6 +138,7 @@
     <ClCompile Include="GuiState.cpp" />
     <ClCompile Include="LinearLayout.cpp" />
     <ClCompile Include="OutlinedButtonView.cpp" />
+    <ClCompile Include="ParentView.cpp" />
     <ClCompile Include="Renderable.cpp" />
     <ClCompile Include="SpacerView.cpp" />
     <ClCompile Include="SunBody.cpp" />

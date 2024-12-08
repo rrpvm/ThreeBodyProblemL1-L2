@@ -12,7 +12,7 @@ private:
 private:
 	Vector2 origin{ 0,0 };
 	Vector2 size{static_cast<int>(mWidth),static_cast<int>(mHeight) };
-	ParentView* mParentView{ nullptr };
+	ParentView* mRootView{ nullptr };
 	bool isDragging = false;
 	DWORD timeStartDragging{ 0 };
 public:
@@ -28,7 +28,7 @@ public:
 	virtual void draw(IRender* renderer);
 	void setOrigin(const Vector2& origin) {
 		this->origin = origin;
-		mParentView->onGlobalOffsetChanged(origin);
+		mRootView->onGlobalOffsetChanged(origin);
 	}
 	void setBgColor(const Color& bgColor) {
 		this->mBackgroundColor = bgColor;

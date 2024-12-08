@@ -63,29 +63,32 @@
     <ClCompile Include="Universe.cpp">
       <Filter>Исходные файлы\tbp</Filter>
     </ClCompile>
-    <ClCompile Include="EarthBody.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="SunBody.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="UserInputController.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="GuiState.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Color.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="OutlinedButtonView.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Исходные файлы\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="EarthBody.cpp">
+      <Filter>Исходные файлы\tbp</Filter>
+    </ClCompile>
+    <ClCompile Include="SunBody.cpp">
+      <Filter>Исходные файлы\tbp</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiState.cpp">
+      <Filter>Исходные файлы\gui</Filter>
     </ClCompile>
     <ClCompile Include="Renderable.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Исходные файлы\render</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Исходные файлы\render</Filter>
+    </ClCompile>
+    <ClCompile Include="ParentView.cpp">
+      <Filter>Исходные файлы\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInputController.cpp">
+      <Filter>Исходные файлы\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

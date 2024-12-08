@@ -1,15 +1,15 @@
 #include "OutlinedButtonView.hpp"
 #include "IRender.h"
+#include "Utils.hpp"
 void OutlinedButtonView::draw(IRender* renderer)
 {
 	int height = (int)measuredHeight;
 	int width = (int)measuredWidth;
-	Vector2 renderPosition = this->viewBound.left + mGlobalOffset;
 	auto textSize = renderer->getTextSize(this->buttonText);
 	RECT drawRect = (viewBound + mGlobalOffset).toRect();
 	drawRect.top += textPositionOffset.y;
 	drawRect.bottom -= textPositionOffset.y;
-	renderer->drawRect(this->borderColor, renderPosition, { width,height }, this->borderThickness);
+	renderer->drawRect(isHovered? this->borderHoverColor : this->borderColor, mGlobalPosition, { width,height }, this->borderThickness);
 	renderer->drawText(this->buttonText, &drawRect,TextAlign::CENTER);
 }
 
@@ -60,4 +60,14 @@ void OutlinedButtonView::measure(uintptr_t availW, uintptr_t availH)
 void OutlinedButtonView::onLayout()
 {
 	//not parent view
+}
+bool OutlinedButtonView::onMouseEvent(const MouseEvent& mouseEvent) {
+	bool isInPoint = Utils::isPointInBB({ mouseEvent.x,mouseEvent.y }, getAbsoluteOrigin(),getSize());
+	isHovered = isInPoint;
+	if (isInPoint && mouseEvent.isMouseClickedNow) {
+		std::cout << "clicked\n";
+	}
+
+
+	return isInPoint;
 }

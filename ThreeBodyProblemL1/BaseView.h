@@ -4,6 +4,7 @@
 #include "Color.h"
 #include "BoundRect.hpp"
 #include <iostream>
+#include "MouseEvent.hpp"
 class Window;
 enum class ViewSizeSpec {
 	MATCH_PARENT,
@@ -20,6 +21,7 @@ protected:
 	uintptr_t width{ 0u }, height{ 0u };
 	BoundRect viewBound;
 	Vector2 mGlobalOffset{ 0,0 };
+	Vector2 mGlobalPosition{ 0, 0};
 protected:
 	Color* mBackgroundColor{ nullptr };
 public:
@@ -68,11 +70,26 @@ public:
 	//window changed position
 	virtual void onGlobalOffsetChanged(const Vector2& globalOffsetChanged) {
 		this->mGlobalOffset = globalOffsetChanged;
+		mGlobalPosition = this->viewBound.left + globalOffsetChanged;
 	}
 	//recalc view
 	void requestLayout();
+	virtual void dispatchMouseEvent(const MouseEvent& mouseEvent) { onMouseEvent(mouseEvent); };	//пробиваем вниз по дереву события(если группа) : (onMouseEvent if view)
+	virtual bool onMouseEvent(const MouseEvent& mouseEvent) { 
+		if (mParentView != nullptr) {
+		 return mParentView->onMouseEvent(mouseEvent);
+		}
+		return true;
+	};//обрабатываем снизу вверх по древу. Если true -> останавливаемся
 
 
+
+	const Vector2& getAbsoluteOrigin() {
+		return this->mGlobalPosition;
+	}
+	const Vector2 getSize() {
+		return { (int)this->measuredWidth,(int)this->measuredHeight };
+	}
 	void onAttachedToView(BaseView* view) {
 		this->mParentView = view;
 		attachedWindowSize = view->attachedWindowSize;
@@ -82,6 +99,7 @@ public:
 	}
 	void setBoundRect(const BoundRect& mBound) {
 		this->viewBound = mBound;
+		this->mGlobalPosition = mBound.left + mGlobalOffset;
 	}
 	
 public:

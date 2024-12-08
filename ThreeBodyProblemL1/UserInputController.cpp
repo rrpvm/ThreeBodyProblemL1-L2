@@ -51,7 +51,7 @@ void UserInputController::setOnEventCallback(onEventCallback callback)
 void UserInputController::onProceed(const MouseEvent& newEvent)
 {
     this->prevMouseEvent = newEvent;
-    std::cout << this->to_string() << std::endl;
+   // std::cout << this->to_string() << std::endl;
     if (onEventProceedCallback != nullptr) {
         onEventProceedCallback(newEvent);
     }

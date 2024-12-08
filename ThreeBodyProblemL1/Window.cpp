@@ -12,7 +12,7 @@ Window::Window(uintptr_t _width, uintptr_t _height, Color backgroundColor)
 }
 void Window::setView(ParentView* mView)
 {
-	this->mParentView = mView;
+	this->mRootView = mView;
 	mView->onAttachedToWindow(this);
 	mView->setBoundRect(BoundRect(this->origin.x, this->origin.y, this->size.x, this->size.y));
 }
@@ -21,6 +21,7 @@ void Window::processMouseEvent(const MouseEvent& mouseEvent)
 {
 	if (!Utils::isPointInBB({ mouseEvent.x,mouseEvent.y }, origin, size)) {
 		isDragging = false;
+		mRootView->dispatchMouseEvent(mouseEvent);
 		return;
 	}
 	if (mouseEvent.isMouseClickedNow) {
@@ -34,16 +35,16 @@ void Window::processMouseEvent(const MouseEvent& mouseEvent)
 		this->setOrigin({ origin.x + mouseEvent.dx, origin.y + mouseEvent.dy });
 	}
 	else {
-
+		mRootView->dispatchMouseEvent(mouseEvent);
 	}
 }
 
 void Window::draw(IRender* renderer)
 {
-	assert(this->mParentView != nullptr && "did you attach the view to window?");
+	assert(this->mRootView != nullptr && "did you attach the view to window?");
 	renderer->drawFilledRect(this->mBackgroundColor, this->origin, this->size);
 	renderer->drawRect(BLACK, this->origin, this->size,2);
-	if (mParentView == nullptr)return;
-	mParentView->draw(renderer);
+	if (mRootView == nullptr)return;
+	mRootView->draw(renderer);
 }
 

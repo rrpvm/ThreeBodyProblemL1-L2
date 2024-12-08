@@ -9,6 +9,7 @@ private:
 	uintptr_t borderThickness{ 1u };
 	Vector2 textPositionOffset{ 0,0 };
 	Vector2 buttonPadding{ 32,16 };
+	bool isHovered{ false };
 public:
 	OutlinedButtonView(const char* debugId, 
 		const char* buttonText,
@@ -44,6 +45,7 @@ public:
 		this->borderHoverColor = borderHoverColor;
 	};
 protected:
+	virtual bool onMouseEvent(const MouseEvent& mouseEvent)override;
 	virtual void draw(IRender* renderer) override;
 	virtual void onAttachedToWindow(Window*) override;
 	virtual void onMeasure() override;

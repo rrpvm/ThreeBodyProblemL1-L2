@@ -34,6 +34,8 @@ public:
 	}
 	virtual void addView(BaseView* mView) override;
 protected:
+	virtual void dispatchMouseEvent(const MouseEvent& mouseEvent) override;
+	virtual bool onMouseEvent(const MouseEvent& mouseEvent) override;
 	virtual void draw(IRender* renderer) override;
 	virtual void onAttachedToWindow(Window*) override;
 	virtual void onMeasure() override;

@@ -126,8 +126,8 @@ void scene1(Window* window) {
     mGuiRoot->setBackgroundColor(new Color(255, 77, 77, 77));//мы фартовые ребята
 
     LinearLayout* mTabsHeader = new LinearLayout("tabs", LinearLayoutOrientation::HORIZONTAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
-    OutlinedButtonView* mControlBtn = new OutlinedButtonView("tab1", "Управление", 4u, Color(255, 255, 255, 255), Color(255, 255, 0, 0), ViewSizeSpec::WRAP_CONTENT, ViewSizeSpec::WRAP_CONTENT);
-    OutlinedButtonView* mSettingsBtn = new OutlinedButtonView("tab1", "Настройки", 4u, Color(255, 255, 255, 255), Color(255, 255, 0, 0), ViewSizeSpec::WRAP_CONTENT, ViewSizeSpec::WRAP_CONTENT);
+    OutlinedButtonView* mControlBtn = new OutlinedButtonView("tab1", "Управление", 4u, Color(255, 255, 255, 255), Color(255, 255, 0, 0), ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
+    OutlinedButtonView* mSettingsBtn = new OutlinedButtonView("tab2", "Настройки", 4u, Color(255, 255, 255, 255), Color(255, 255, 0, 0), ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
 
     mTabsHeader->addView(mControlBtn);
     mTabsHeader->addView(mSettingsBtn);
