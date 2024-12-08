@@ -65,9 +65,10 @@ bool OutlinedButtonView::onMouseEvent(const MouseEvent& mouseEvent) {
 	bool isInPoint = Utils::isPointInBB({ mouseEvent.x,mouseEvent.y }, getAbsoluteOrigin(),getSize());
 	isHovered = isInPoint;
 	if (isInPoint && mouseEvent.isMouseClickedNow) {
-		std::cout << "clicked\n";
+		if (this->mListener) {
+			this->mListener->invoke();
+		}
+		return this->mListener != nullptr;
 	}
-
-
-	return isInPoint;
+	return false;
 }

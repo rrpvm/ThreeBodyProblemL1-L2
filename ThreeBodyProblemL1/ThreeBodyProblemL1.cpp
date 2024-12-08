@@ -125,6 +125,15 @@ void __stdcall onFpsSettingsChanged (bool arg) {
 void __stdcall onUniversePauseSettingsChanged(bool arg) {
     appState.onPauseUniverseConfigChange(arg);
 }
+void __stdcall onShowEpochChanged(bool arg) {
+    appState.onShowEpochChange(arg);
+}
+void __stdcall onShowTickChanged(bool arg) {
+    appState.onShowTicksChange(arg);
+}
+void __stdcall onAddDefaultBody() {
+    appState.addDefaultBody();
+}
 void scene1(Window* window) {
     window->setBgColor(COLORS::SURFACE);
     LinearLayout* mGuiRoot = new LinearLayout("mainRoot", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::MATCH_PARENT);
@@ -178,6 +187,13 @@ void scene1(Window* window) {
  
         //viewpager
         vp->addView(fragmentManagement);
+        {
+            OutlinedButtonView* addBodyBtn = new OutlinedButtonView("#addBodyButton","add body",4,COLORS::PRIMARY,COLORS::ON_PRIMARY,ViewSizeSpec::WRAP_CONTENT,ViewSizeSpec::WRAP_CONTENT);
+            addBodyBtn->setOnClickListener(new OnClickListener(onAddDefaultBody));
+            fragmentManagement->addView(new SpacerView("#fpsContainerTopPadding", 0, 16));
+
+            fragmentManagement->addView(addBodyBtn);
+        }
         vp->addView(fragmentSettigs);
         {
             //fps
@@ -188,24 +204,35 @@ void scene1(Window* window) {
             LinearLayout* pauseLine = new LinearLayout("pauseLineContainer", LinearLayoutOrientation::HORIZONTAL, ViewSizeSpec::WRAP_CONTENT, ViewSizeSpec::WRAP_CONTENT);
             pauseLine->addView(new SpacerView("#cbFpsPadding", 8, 0));
             CheckBoxView* pauseUniverseCheckbox = new CheckBoxView("#pauseUniverseCheckbox", "pause universe", 20u);
+            //show epoch
+            LinearLayout* showEpochContainer = new LinearLayout("showEpochContainer", LinearLayoutOrientation::HORIZONTAL, ViewSizeSpec::WRAP_CONTENT, ViewSizeSpec::WRAP_CONTENT);
+            showEpochContainer->addView(new SpacerView("#cbFpsPadding", 8, 0));
+            CheckBoxView* showEpochCheckbox = new CheckBoxView("#showEpochCheckbox", "show epoch", 20u);
+            //show ticks
+            LinearLayout* showTicksContainer = new LinearLayout("showTicksContainer", LinearLayoutOrientation::HORIZONTAL, ViewSizeSpec::WRAP_CONTENT, ViewSizeSpec::WRAP_CONTENT);
+            showTicksContainer->addView(new SpacerView("#cbFpsPadding", 8, 0));
+            CheckBoxView* showTickCheckbox = new CheckBoxView("#showTickCheckbox", "show ticks", 20u);
             //listeners
             fpsCheckbox->onCheckboxStateChanged(onFpsSettingsChanged);
             pauseUniverseCheckbox->onCheckboxStateChanged(onUniversePauseSettingsChanged);
+            showEpochCheckbox->onCheckboxStateChanged(onShowEpochChanged);
+            showTickCheckbox->onCheckboxStateChanged(onShowTickChanged);
             //view child
             pauseLine->addView(pauseUniverseCheckbox);
             fpsLine->addView(fpsCheckbox);
+            showEpochContainer->addView(showEpochCheckbox);
+            showTicksContainer->addView(showTickCheckbox);
             //containers
             fragmentSettigs->addView(new SpacerView("#fpsContainerTopPadding", 0, 16));
             fragmentSettigs->addView(fpsLine);
             fragmentSettigs->addView(pauseLine);
+            fragmentSettigs->addView(showEpochContainer);
+            fragmentSettigs->addView(showTicksContainer);
         }
       
         mGuiRoot->addView(new SpacerView("#underTabPadding", 0, 8));
         mGuiRoot->addView(vp);
     }
-   
-    
-   
   
     window->setView(mGuiRoot);
 }
@@ -213,15 +240,35 @@ void onTBPCallback() {
     IRender* renderer = appState.renderer.get();
     renderer->startFrame();
     renderer->clear();
+    appState.bodyDataMutex.lock();
     for (DefaultBody* fBody : appState.mBodies) {
         fBody->draw(appState.renderer.get());
     }
-    static RECT tickRect = { 15,0,80,150 };
-    static RECT timeRect = { 15,30,180,150 };
-    std::string tickText = "tick: " + std::to_string(appState.applicationUniverse->getCmd()->currentTick);
-    std::string timeText = "time: " + std::to_string(appState.applicationUniverse->getCmd()->currentTick * appState.applicationUniverse->getCmd()->deltaTime) + " seconds";
-    renderer->drawText(tickText,COLORS::PRIMARY, &tickRect);
-    renderer->drawText(timeText, COLORS::PRIMARY, &timeRect);
+    appState.bodyDataMutex.unlock();
+
+
+    if (appState.isShowTickEnabled()) {
+        std::string tickText = "tick: " + std::to_string(appState.applicationUniverse->getCmd()->currentTick);
+        auto size =  renderer->getTextSize(tickText);
+        static RECT tickRect = { 15,15,15 + size.x*1.25,15 + size.y};
+        renderer->drawText(tickText, COLORS::PRIMARY, &tickRect);
+    }
+    if (appState.isShowEpochEnabled()) {
+        std::string timeText = "time: " + std::to_string(appState.applicationUniverse->getCmd()->currentTick * appState.applicationUniverse->getCmd()->deltaTime) + " seconds";
+        auto size = renderer->getTextSize(timeText);
+        static RECT rc = { 15,40,15 + size.x + 15,40 + size.y };
+  
+        renderer->drawText(timeText, COLORS::PRIMARY, &rc);
+    }
+    {
+        std::string countText = "bodies count: " + std::to_string(appState.mBodies.size());
+        auto size = renderer->getTextSize(countText);
+        static int startY = 80;
+        static RECT rc = { 15,startY,15 + size.x + 15,startY + size.y };
+
+        renderer->drawText(countText, COLORS::PRIMARY, &rc);
+    }
+   
 
     for (Window* window : gui->getWindowsToRender()) {
         renderer->drawWindow(*window);
@@ -234,14 +281,8 @@ void threeBodyProblem() {
     appState.applicationUniverse->setOnReadyFrameSimulation((UniversePreparedCallback)onTBPCallback);
     auto sun = new SunBody(Vector3D(), Vector3D(0.0F,-0.1F,.0F), appState.applicationUniverse->getCmd());
     auto earth = new EarthBody(appState.applicationUniverse->getCmd(), sun, Vector3D(13.0F,13.0F, 0.0F));
-    appState.mBodies.push_back(sun);
-    appState.mBodies.push_back(earth);
-    for (int i = 0; i < appState.START_BODIES_COUNT; i++) {
-        appState.mBodies.push_back(new DefaultBody(1337 + i, appState.applicationUniverse->getCmd()));
-    }
-    for (auto* b : appState.mBodies) {
-        appState.applicationUniverse->addBody(b);
-    }
+    appState.addCustomBody(sun);
+    appState.addCustomBody(earth);
     std::thread simulationWorker([] {
         appState.applicationUniverse->runSimulation();
         });

@@ -9,12 +9,12 @@ void Universe::addBody(DefaultBody* body)
 		if (mBody == body)return;
 	}
 	mBodies.push_back(body);
+	mCmd.setBodies(mBodies);
 }
 
 void Universe::runSimulation()
 {
 	this->isRunning = true;
-	mCmd.setBodies(mBodies);
 	while (isRunning) {
 		if (isPauseSimulating) {
 			this->mPreparedCallback();
