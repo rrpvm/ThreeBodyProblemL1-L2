@@ -17,6 +17,7 @@
 #include "GuiState.hpp"
 #include "OutlinedButtonView.hpp"
 #include "SelectableButton.hpp"
+#include "ViewPager.hpp"
 
 #define WND_NAME "Three body problem solve"
 ApplicationState appState = ApplicationState();
@@ -132,34 +133,54 @@ void scene1(Window* window) {
         //top padding
         mGuiRoot->addView(new SpacerView("#topPadding",0,8));
     }
-   
+    {
+        //container
+        ViewPager* vp = new ViewPager("viewpager", ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::MATCH_PARENT);
+        vp->setBackgroundColor(new Color(255, 255, 0, 0));
         //tabs
         int paddingHorizontal = 8;
         LinearLayout* mTabsHeader = new LinearLayout("tabs", LinearLayoutOrientation::HORIZONTAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
-        SelectableButton* mControlBtn = new SelectableButton("managementTab", "Управление", 2u, Color(255, 255, 255, 255), Color(255, 255, 0, 0), ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
+        SelectableButton* mControlBtn = new SelectableButton("managementTab", "Управление", 2u, Color(255, 11, 11, 11), Color(255, 44, 44, 44), Color(255, 33, 33, 33), ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
         SpacerView* spacerBtwTab = new SpacerView("#fff", 24, 0);
-        SelectableButton*  mSettingsBtn = new SelectableButton("settingsTab", "Настройки", 2u, Color(255, 255, 255, 255), Color(255, 255, 0, 0), ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
-       
-        auto tabResolver = [](int* selectedTab, SelectableButton* mControlBtn, SelectableButton* mSettingsBtn) {
+        SelectableButton* mSettingsBtn = new SelectableButton("settingsTab", "Настройки", 2u, Color(255, 11, 11, 11), Color(255, 44, 44, 44), Color(255, 33, 33, 33), ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
+
+        auto tabResolver = [](int* selectedTab, SelectableButton* mControlBtn, SelectableButton* mSettingsBtn,ViewPager* pager) {
             if (mControlBtn) mControlBtn->setSelected(*selectedTab == 0);
             if (mSettingsBtn) mSettingsBtn->setSelected(*selectedTab == 1);
+            if (pager != nullptr) {
+                pager->showViewIndex(*selectedTab);
+            }
         };
 
-        mControlBtn->setOnClickListener(new OnClickListener([&selectedTab, mControlBtn, mSettingsBtn, tabResolver]() {
+        mControlBtn->setOnClickListener(new OnClickListener([&selectedTab, mControlBtn, mSettingsBtn,vp, tabResolver]() {
             selectedTab = 0;
-            tabResolver(&selectedTab, mControlBtn, mSettingsBtn);
-        }));
+            tabResolver(&selectedTab, mControlBtn, mSettingsBtn,vp);
+            }));
 
-        mSettingsBtn->setOnClickListener(new OnClickListener([&selectedTab, mControlBtn, mSettingsBtn, tabResolver]() {
+        mSettingsBtn->setOnClickListener(new OnClickListener([&selectedTab, mControlBtn, mSettingsBtn, vp, tabResolver]() {
             selectedTab = 1;
-            tabResolver(&selectedTab, mControlBtn, mSettingsBtn);
-        }));
+            tabResolver(&selectedTab, mControlBtn, mSettingsBtn,vp);
+            }));
+        tabResolver(&selectedTab, mControlBtn, mSettingsBtn,vp);
         mTabsHeader->addView(new SpacerView("#leftSpacerTab", paddingHorizontal, 0));
         mTabsHeader->addView(mControlBtn);
         mTabsHeader->addView(spacerBtwTab);
         mTabsHeader->addView(mSettingsBtn);
         mTabsHeader->addView(new SpacerView("#rightSpacerTab", paddingHorizontal, 0));
         mGuiRoot->addView(mTabsHeader);
+     
+       
+
+        LinearLayout* fragmentManagement = new LinearLayout("fragment1", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::MATCH_PARENT);
+        fragmentManagement->setBackgroundColor(new Color(255, 0, 255, 0));
+        LinearLayout* fragmentSettigs = new LinearLayout("fragment2", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::MATCH_PARENT);
+        fragmentSettigs->setBackgroundColor(new Color(255, 255, 0, 255));
+
+        vp->addView(fragmentManagement);
+        vp->addView(fragmentSettigs);
+        mGuiRoot->addView(vp);
+    }
+   
     
    
   
@@ -170,7 +191,7 @@ void onTBPCallback() {
     renderer->startFrame();
     renderer->clear();
     for (DefaultBody* fBody : appState.mBodies) {
-     //   fBody->draw(appState.renderer.get());
+        fBody->draw(appState.renderer.get());
     }
     static RECT tickRect = { 15,0,80,150 };
     static RECT timeRect = { 15,30,180,150 };

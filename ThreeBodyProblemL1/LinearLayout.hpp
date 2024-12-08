@@ -29,7 +29,7 @@ public:
 	LinearLayout(const char* debugId, LinearLayoutOrientation orientation, uintptr_t width, ViewSizeSpec _heightSpec) :ParentView(debugId, widthSize, _heightSpec) {
 		mOrientation = orientation;
 	};
-	~LinearLayout() {
+	virtual ~LinearLayout() {
 
 	}
 	virtual void addView(BaseView* mView) override;

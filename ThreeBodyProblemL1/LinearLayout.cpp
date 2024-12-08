@@ -32,7 +32,9 @@ void LinearLayout::draw(IRender* renderer)
 {
 
 	if (mBackgroundColor != nullptr) {
-		renderer->drawFilledRect(*mBackgroundColor, this->viewBound.left + mGlobalOffset, {(int)this->mViewLayoutParams->width,(int)this->mViewLayoutParams->height});
+		if (viewBound.right.x > viewBound.left.x) {
+			renderer->drawFilledRect(*mBackgroundColor, this->viewBound.left + mGlobalOffset, { (int)this->mViewLayoutParams->width,(int)this->mViewLayoutParams->height });
+		}
 	}
 	for (const auto& view : mViews) {
 		if (view == nullptr)continue;
@@ -125,16 +127,6 @@ void LinearLayout::onMeasure()
 			}
 		}
 	}
-	
-	
-
-	/*for (const auto& child : mViews) {
-		uintptr_t childWidthSpec = (child->widthSize == ViewSizeSpec::MATCH_PARENT) ? parentWidthSpec : child->measuredWidth;
-		uintptr_t childHeightSpec = (child->heightSize == ViewSizeSpec::MATCH_PARENT) ? parentHeightSpec : child->measuredHeight;
-		child->measure(childWidthSpec, childHeightSpec);
-		resultWidth = (mOrientation == VERTICAL) ? max(resultWidth, child->measuredWidth) : resultWidth + child->measuredWidth;
-		resultHeight = (mOrientation == VERTICAL) ? resultHeight + child->measuredHeight : max(resultHeight, child->measuredHeight);
-	}*/
 	if (widthSize == ViewSizeSpec::MATCH_PARENT) {
 		resultWidth = parentWidthSpec;
 	}
@@ -146,6 +138,17 @@ void LinearLayout::onMeasure()
 
 void LinearLayout::measure(uintptr_t availW, uintptr_t availH)
 {
+	if (availH == 0 && availW == 0)return;
+	attachedWindowSize.x = availW;//костыль
+	attachedWindowSize.y = availH;//костыль
+
+	/*if (widthSize == ViewSizeSpec::MATCH_PARENT && heightSize == ViewSizeSpec::MATCH_PARENT) {
+		setMeasuredDimension(availW, availH);
+	}*/
+	
+
+	
+	//я не знаю как лучше организовать изначальный measure в родителе без костылей.
 	onMeasure();
 }
 

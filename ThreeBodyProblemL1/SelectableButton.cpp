@@ -22,11 +22,11 @@ void SelectableButton::draw(IRender* renderer)
 	RECT drawRect = (viewBound + mGlobalOffset).toRect();
 	drawRect.top += textPositionOffset.y;
 	drawRect.bottom -= textPositionOffset.y;
-	if (isSelected) {
-		renderer->drawFilledRect(Color(255,255,255,255), mGlobalPosition, {width,height});
+	if (isSelected || isHovered) {
+		renderer->drawFilledRect(isHovered? hoveredColor : selectedColor, mGlobalPosition, {width,height});
 	}
 	else {
-		renderer->drawRect(isHovered ? this->borderHoverColor : this->borderColor, mGlobalPosition, { width,height }, this->borderThickness);
+		renderer->drawRect(defaultColor, mGlobalPosition, { width,height }, this->borderThickness);
 	}
 	renderer->drawText(this->buttonText, &drawRect, TextAlign::CENTER);
 }

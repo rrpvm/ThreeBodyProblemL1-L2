@@ -93,6 +93,9 @@
     <ClCompile Include="SelectableButton.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="ViewPager.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Color.h">
@@ -180,6 +183,9 @@
       <Filter>Файлы заголовков\gui</Filter>
     </ClInclude>
     <ClInclude Include="OnClickListener.hpp">
+      <Filter>Файлы заголовков\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPager.hpp">
       <Filter>Файлы заголовков\gui</Filter>
     </ClInclude>
   </ItemGroup>

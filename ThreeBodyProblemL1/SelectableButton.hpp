@@ -5,9 +5,10 @@
 class SelectableButton : public BaseView {
 private:
 	const char* buttonText;
-	Color borderColor{ BLACK };
-	Color borderHoverColor{ WHITE };
-	uintptr_t borderThickness{ 1u };
+	Color defaultColor{ Color(255,99,99,99) };
+	Color hoveredColor{ Color(255,55,55,55) };
+	Color selectedColor{ Color(255,77,77,77) };
+	uintptr_t borderThickness{ 2u };
 	Vector2 textPositionOffset{ 0,0 };
 	Vector2 buttonPadding{ 32,16 };
 	bool isHovered{ false };
@@ -19,33 +20,39 @@ public:
 		uintptr_t borderThickness,
 		const Color& borderColor,
 		const Color& borderHoverColor,
+		const Color& selectedColor,
 		uintptr_t _width,
 		uintptr_t _height) : BaseView(debugId, _width, _height) {
 		this->buttonText = buttonText;
-		this->borderColor = borderColor;
-		this->borderHoverColor = borderHoverColor;
+		this->defaultColor = borderColor;
+		this->hoveredColor = borderHoverColor;
+		this->selectedColor = selectedColor;
 	};
 	SelectableButton(const char* debugId,
 		const char* buttonText,
 		uintptr_t borderThickness,
 		const Color& borderColor,
 		const Color& borderHoverColor,
+		const Color& selectedColor,
 		ViewSizeSpec widthSpec,
 		uintptr_t _height) : BaseView(debugId, widthSpec, _height) {
 		this->buttonText = buttonText;
-		this->borderColor = borderColor;
-		this->borderHoverColor = borderHoverColor;
+		this->defaultColor = borderColor;
+		this->hoveredColor = borderHoverColor;
+		this->selectedColor = selectedColor;
 	};
 	SelectableButton(const char* debugId,
 		const char* buttonText,
 		uintptr_t borderThickness,
 		const Color& borderColor,
 		const Color& borderHoverColor,
+		const Color& selectedColor,
 		ViewSizeSpec widthSpec,
 		ViewSizeSpec _height) : BaseView(debugId, widthSpec, _height) {
 		this->buttonText = buttonText;
-		this->borderColor = borderColor;
-		this->borderHoverColor = borderHoverColor;
+		this->defaultColor = borderColor;
+		this->hoveredColor = borderHoverColor;
+		this->selectedColor = selectedColor;
 	};
 	void setSelected(bool isSelected) {
 		this->isSelected = isSelected;

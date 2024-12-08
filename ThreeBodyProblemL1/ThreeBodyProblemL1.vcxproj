@@ -147,6 +147,7 @@
     <ClCompile Include="Universe.cpp" />
     <ClCompile Include="UserInputController.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="ViewPager.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WinGdiRender.cpp" />
   </ItemGroup>
@@ -178,6 +179,7 @@
     <ClInclude Include="Utils.hpp" />
     <ClInclude Include="Vector2.hpp" />
     <ClInclude Include="Vector3D.hpp" />
+    <ClInclude Include="ViewPager.hpp" />
     <ClInclude Include="Window.hpp" />
     <ClInclude Include="WinGdiRender.hpp" />
   </ItemGroup>

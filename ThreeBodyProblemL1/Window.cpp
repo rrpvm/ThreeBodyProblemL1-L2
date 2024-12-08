@@ -13,8 +13,8 @@ Window::Window(uintptr_t _width, uintptr_t _height, Color backgroundColor)
 void Window::setView(ParentView* mView)
 {
 	this->mRootView = mView;
-	mView->onAttachedToWindow(this);
 	mView->setBoundRect(BoundRect(this->origin.x, this->origin.y, this->size.x, this->size.y));
+	mView->onAttachedToWindow(this);
 }
 
 void Window::processMouseEvent(const MouseEvent& mouseEvent)
