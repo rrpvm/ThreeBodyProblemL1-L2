@@ -32,5 +32,5 @@ void SunBody::draw(IRender* renderer)
 	Vector2 size = renderer->getTextSize("the sun");
 	RECT rc = { transformX - SUN_RADIUS/2  - size.x/2, transformY + SUN_RADIUS/2, transformX + SUN_RADIUS/2 + size.x/2, transformY + SUN_RADIUS/2 + size.y};
 	
-	renderer->drawText("The Sun", &rc);
+	renderer->drawText("The Sun",COLORS::PRIMARY, &rc);
 }

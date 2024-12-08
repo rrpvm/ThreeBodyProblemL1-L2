@@ -87,10 +87,10 @@ void WinGdiRender::drawFilledRectWithOutline(Color fillColor, Color outlineColor
 	drawRect(outlineColor, origin, size,thickness);
 }
 
-void WinGdiRender::drawText(const std::string& text, LPRECT lpRect, TextAlign textAlign)
+void WinGdiRender::drawText(const std::string& text, const Color& mColor, LPRECT lpRect, TextAlign textAlign )
 {
 	assert(bufferContext != nullptr && "back buffer nullptr");
-	SetTextColor(bufferContext, RGB(255, 255, 0));
+	SetTextColor(bufferContext, mColor.toRGB());
 	SetBkMode(bufferContext, TRANSPARENT);
 	char* buffer = new char[text.length()];
 	std::memcpy(buffer, text.c_str(), text.size());
@@ -162,7 +162,7 @@ void WinGdiRender::endFrame()
 			break;
 		}
 			}
-		this->drawText(fpsString, &rc);
+		this->drawText(fpsString,COLORS::ON_SURFACE, &rc);
 	}
 
 	assert(bufferContext != nullptr && "bufferContext doesnt created");

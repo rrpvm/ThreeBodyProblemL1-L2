@@ -1,4 +1,5 @@
 #pragma once
+#include "Color.h"
 #include "Vector3D.hpp"
 #include "Renderable.h"
 #include "assert.h"
@@ -15,6 +16,7 @@ protected:
 	Vector3D mV{};//скорость по осям
 	Vector3D mA{};//ускорение по осям
 	UniverseCmd* mCmdPtr{ nullptr };//const
+	Color textColor{ COLORS::ON_SURFACE };
 public:
 	virtual ~DefaultBody(){
 

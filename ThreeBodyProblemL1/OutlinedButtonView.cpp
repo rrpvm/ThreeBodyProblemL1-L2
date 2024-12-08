@@ -10,7 +10,7 @@ void OutlinedButtonView::draw(IRender* renderer)
 	drawRect.top += textPositionOffset.y;
 	drawRect.bottom -= textPositionOffset.y;
 	renderer->drawRect(isHovered? this->borderHoverColor : this->borderColor, mGlobalPosition, { width,height }, this->borderThickness);
-	renderer->drawText(this->buttonText, &drawRect,TextAlign::CENTER);
+	renderer->drawText(this->buttonText,COLORS::ON_SURFACE, &drawRect,TextAlign::CENTER);
 }
 
 void OutlinedButtonView::onAttachedToWindow(Window*)

@@ -42,6 +42,6 @@ void EarthBody::draw(IRender* renderer)
 	const auto text = "The Earth";
 	Vector2 size = renderer->getTextSize(text);
 	RECT rc = { transformX - EARTH_RADIUS / 2 - size.x / 2, transformY + EARTH_RADIUS / 2, transformX + EARTH_RADIUS / 2 + size.x / 2, transformY + EARTH_RADIUS / 2 + size.y };
-	renderer->drawText(text, &rc);
+	renderer->drawText(text,mColor, &rc);
 }
 

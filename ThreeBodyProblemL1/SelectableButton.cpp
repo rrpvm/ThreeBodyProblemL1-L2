@@ -28,7 +28,7 @@ void SelectableButton::draw(IRender* renderer)
 	else {
 		renderer->drawRect(defaultColor, mGlobalPosition, { width,height }, this->borderThickness);
 	}
-	renderer->drawText(this->buttonText, &drawRect, TextAlign::CENTER);
+	renderer->drawText(this->buttonText,this->textColor, &drawRect, TextAlign::CENTER);
 }
 
 void SelectableButton::onAttachedToWindow(Window*)

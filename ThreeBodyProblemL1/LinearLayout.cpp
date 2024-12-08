@@ -165,9 +165,9 @@ void LinearLayout::onLayout()
 			tmpBound.right.x = rightPosX;
 			tmpBound.right.y = rightPosY;
 			view->setBoundRect(tmpBound);
-			if (dynamic_cast<ParentView*>(view)) {
+			//if (dynamic_cast<ParentView*>(view)) {
 				view->onLayout();
-			}
+			//}
 			tmpBound.left.y += view->measuredHeight;
 		}
 	}
@@ -181,9 +181,9 @@ void LinearLayout::onLayout()
 			tmpBound.right.x = rightPosX;
 			tmpBound.right.y = rightPosY;
 			view->setBoundRect(tmpBound);
-			if (dynamic_cast<ParentView*>(view)) {
+			//if (dynamic_cast<ParentView*>(view)) {
 				view->onLayout();
-			}
+			//}
 			tmpBound.left.x += view->measuredWidth;
 		}
 	}

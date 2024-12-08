@@ -5,6 +5,7 @@
 #include "BoundRect.hpp"
 #include <iostream>
 #include "MouseEvent.hpp"
+#include "OnClickListener.hpp"
 class Window;
 enum class ViewSizeSpec {
 	MATCH_PARENT,
@@ -22,6 +23,7 @@ protected:
 	BoundRect viewBound;
 	Vector2 mGlobalOffset{ 0,0 };
 	Vector2 mGlobalPosition{ 0, 0};
+	OnClickListener* mListener = nullptr;
 protected:
 	Color* mBackgroundColor{ nullptr };
 public:
@@ -99,7 +101,9 @@ public:
 		this->viewBound = mBound;
 		this->mGlobalPosition = mBound.left + mGlobalOffset;
 	}
-	
+	void setOnClickListener(OnClickListener* clickListener) {
+		this->mListener = clickListener;
+	}
 public:
 	void setBackgroundColor(const Color* mColor);//ui bg color
 	virtual ~BaseView() {

@@ -1,19 +1,17 @@
 #pragma once
 #include "BaseView.h"
-#include "OnClickListener.hpp"
-
 class SelectableButton : public BaseView {
 private:
 	const char* buttonText;
 	Color defaultColor{COLORS::SURFACE_CONTRAST };
 	Color hoveredColor{ COLORS::PRIMARY_VARIANT };
 	Color selectedColor{COLORS::PRIMARY };
+	Color textColor{ COLORS::ON_SURFACE };
 	uintptr_t borderThickness{ 2u };
 	Vector2 textPositionOffset{ 0,0 };
 	Vector2 buttonPadding{ 32,16 };
 	bool isHovered{ false };
 	bool isSelected{ false };
-	OnClickListener* mListener = nullptr;
 public:
 	SelectableButton(const char* debugId,
 		const char* buttonText,
@@ -46,9 +44,6 @@ public:
 	}
 	void setSelected(bool isSelected) {
 		this->isSelected = isSelected;
-	}
-	void setOnClickListener(OnClickListener* clickListener) {
-		this->mListener = clickListener;
 	}
 protected:
 	virtual bool onMouseEvent(const MouseEvent& mouseEvent)override;

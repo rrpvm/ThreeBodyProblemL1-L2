@@ -83,5 +83,5 @@ void DefaultBody::draw(IRender* renderer)
     Vector2 size = renderer->getTextSize(std::to_string(id));
     RECT rc = { transformX - DEFAULT_RADIUS / 2 - size.x / 2, transformY + DEFAULT_RADIUS / 2, transformX + DEFAULT_RADIUS / 2 + size.x / 2, transformY + DEFAULT_RADIUS / 2 + size.y };
 
-    renderer->drawText(std::to_string(id), &rc);
+    renderer->drawText(std::to_string(id),this->textColor, &rc);
 }

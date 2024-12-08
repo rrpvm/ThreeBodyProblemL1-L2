@@ -96,6 +96,9 @@
     <ClCompile Include="ViewPager.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="ApplicationState.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Color.h">
@@ -187,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="ViewPager.hpp">
       <Filter>Файлы заголовков\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="ApplicationConfig.hpp">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

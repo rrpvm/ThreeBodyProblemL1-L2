@@ -107,9 +107,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         appState.renderer = std::make_unique<WinGdiRender>(windowDeviceContext);
         appState.renderer->setScreenSize({ 1280,720 });
         appState.renderer->setBgColor(COLORS::SURFACE);
-        if (dynamic_cast<IRenderStat*>(appState.renderer.get())) {
-            dynamic_cast<IRenderStat*>(appState.renderer.get())->startShowFPS(FpsPosition::TOP_RIGHT);
-        }
         appState.userInput->setOnEventCallback((onEventCallback)defaultGuiProcessEvent);
         break;
     }
@@ -122,7 +119,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
 }
+void __stdcall onFpsSettingsChanged (bool arg) {
+    appState.onFpsConfigChange(arg);
 
+}
 void scene1(Window* window) {
     window->setBgColor(COLORS::SURFACE);
     LinearLayout* mGuiRoot = new LinearLayout("mainRoot", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::MATCH_PARENT);
@@ -172,13 +172,22 @@ void scene1(Window* window) {
        
 
         LinearLayout* fragmentManagement = new LinearLayout("fragment1", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::MATCH_PARENT);
-       // fragmentManagement->setBackgroundColor(new Color(255, 255, 0, 0));
         LinearLayout* fragmentSettigs = new LinearLayout("fragment2", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::MATCH_PARENT);
-       // fragmentSettigs->setBackgroundColor(new Color(255, 255, 255, 255));
-
+ 
+        //viewpager
         vp->addView(fragmentManagement);
         vp->addView(fragmentSettigs);
-        fragmentManagement->addView(new CheckBoxView("fff", 20, 20));
+        {
+            LinearLayout* fpsLine = new LinearLayout("fpsCheckboxContaiener", LinearLayoutOrientation::HORIZONTAL, ViewSizeSpec::WRAP_CONTENT, ViewSizeSpec::WRAP_CONTENT);
+            fpsLine->addView(new SpacerView("#cbFpsPadding",8,0));
+
+            CheckBoxView* fpsCheckbox = new CheckBoxView("fpsCheckbox","show fps", 20u);
+            fpsCheckbox->onCheckboxStateChanged(onFpsSettingsChanged);
+            fpsLine->addView(fpsCheckbox);
+            fragmentSettigs->addView(new SpacerView("#fpsContainerTopPadding", 0, 16));
+            fragmentSettigs->addView(fpsLine);
+        }
+      
         mGuiRoot->addView(new SpacerView("#underTabPadding", 0, 8));
         mGuiRoot->addView(vp);
     }
@@ -199,8 +208,8 @@ void onTBPCallback() {
     static RECT timeRect = { 15,30,180,150 };
     std::string tickText = "tick: " + std::to_string(appState.applicationUniverse->getCmd()->currentTick);
     std::string timeText = "time: " + std::to_string(appState.applicationUniverse->getCmd()->currentTick * appState.applicationUniverse->getCmd()->deltaTime) + " seconds";
-    renderer->drawText(tickText, &tickRect);
-    renderer->drawText(timeText, &timeRect);
+    renderer->drawText(tickText,COLORS::PRIMARY, &tickRect);
+    renderer->drawText(timeText, COLORS::PRIMARY, &timeRect);
 
     for (Window* window : gui->getWindowsToRender()) {
         renderer->drawWindow(*window);

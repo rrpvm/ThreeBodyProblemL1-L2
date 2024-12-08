@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ApplicationState.cpp" />
     <ClCompile Include="BaseView.cpp" />
     <ClCompile Include="CheckBoxView.cpp" />
     <ClCompile Include="Color.cpp" />
@@ -152,6 +153,7 @@
     <ClCompile Include="WinGdiRender.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ApplicationConfig.hpp" />
     <ClInclude Include="BaseView.h" />
     <ClInclude Include="CheckBoxView.hpp" />
     <ClInclude Include="Color.h" />
