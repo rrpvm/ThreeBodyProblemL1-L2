@@ -52,6 +52,9 @@ void ViewPager::onLayout()
 		}
 		if (i != this->selectViewIndex) {
 			view->setBoundRect({-1,-1,-1,-1});
+			if (dynamic_cast<ParentView*>(view)) {
+				view->onLayout();
+			}
 		}
 		else {
 			view->setBoundRect(viewBound);

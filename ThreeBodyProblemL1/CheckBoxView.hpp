@@ -4,8 +4,9 @@
 #include "ICheckBox.hpp"
 const class CheckBoxView : public BaseView,public ICheckBox {
 private:
-	Color checkedColor{Color(255,255,0,0)};
-	Color uncheckedColor{Color(255,255,0,0)};
+	Color borderColor{ COLORS::PRIMARY };
+	Color checkedColor{COLORS::PRIMARY};
+	Color uncheckedColor{COLORS::SECONDARY_PRIMARY};
 public:
 	CheckBoxView(const char* debugId,	uintptr_t _width, uintptr_t _height) : BaseView(debugId,_width, _height), ICheckBox([](bool isChecked) {
 

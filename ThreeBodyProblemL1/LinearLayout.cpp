@@ -30,11 +30,11 @@ bool LinearLayout::onMouseEvent(const MouseEvent& mouseEvent)
 }
 void LinearLayout::draw(IRender* renderer)
 {
-
+	if (viewBound.right.x <= viewBound.left.x || viewBound.right.x == -1) {
+		return;
+	}
 	if (mBackgroundColor != nullptr) {
-		if (viewBound.right.x > viewBound.left.x) {
 			renderer->drawFilledRect(*mBackgroundColor, this->viewBound.left + mGlobalOffset, { (int)this->mViewLayoutParams->width,(int)this->mViewLayoutParams->height });
-		}
 	}
 	for (const auto& view : mViews) {
 		if (view == nullptr)continue;

@@ -6,12 +6,18 @@ void CheckBoxView::draw(IRender* renderer)
 	int height = (int)measuredHeight;
 	int width = (int)measuredWidth;
 	Vector2 renderPosition = this->viewBound.left + mGlobalOffset;
-	renderer->drawFilledRect(this->checked ? checkedColor : uncheckedColor, renderPosition, { width,height });
-	renderer->drawRect(Color(255, 0, 0, 0), renderPosition, { width,height });
 
-	RECT drawRect = (viewBound + mGlobalOffset).toRect();
-	renderer->drawText(std::string("вау"), &drawRect);
+
+
+	//lower layer
+
+	renderer->drawFilledRect(this->checked ? checkedColor : uncheckedColor, renderPosition, { width,height });
 	
+	//upper layer
+	static int borderThickness = 2;
+	auto borderPosition = renderPosition + Vector2(borderThickness / 2, borderThickness / 2);
+	auto borderPositionSize = Vector2(width, height) - Vector2(borderThickness / 2, borderThickness / 2);
+	renderer->drawRect(this->borderColor, borderPosition, borderPositionSize, borderThickness);
 }
 
 void CheckBoxView::onAttachedToWindow(Window* wnd)

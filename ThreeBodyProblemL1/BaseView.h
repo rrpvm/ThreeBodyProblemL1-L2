@@ -82,8 +82,6 @@ public:
 		return true;
 	};//обрабатываем снизу вверх по древу. Если true -> останавливаемся
 
-
-
 	const Vector2& getAbsoluteOrigin() {
 		return this->mGlobalPosition;
 	}
@@ -103,7 +101,7 @@ public:
 	}
 	
 public:
-	void setBackgroundColor(Color* mColor);//ui bg color
+	void setBackgroundColor(const Color* mColor);//ui bg color
 	virtual ~BaseView() {
 
 	}

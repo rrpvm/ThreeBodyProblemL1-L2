@@ -106,7 +106,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         HDC windowDeviceContext = GetDC(hwnd);
         appState.renderer = std::make_unique<WinGdiRender>(windowDeviceContext);
         appState.renderer->setScreenSize({ 1280,720 });
-        appState.renderer->setBgColor(Color(255, 33, 33, 33));
+        appState.renderer->setBgColor(COLORS::SURFACE);
         if (dynamic_cast<IRenderStat*>(appState.renderer.get())) {
             dynamic_cast<IRenderStat*>(appState.renderer.get())->startShowFPS(FpsPosition::TOP_RIGHT);
         }
@@ -124,11 +124,11 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 }
 
 void scene1(Window* window) {
-    window->setBgColor(Color(255, 77, 77, 77));
+    window->setBgColor(COLORS::SURFACE);
     LinearLayout* mGuiRoot = new LinearLayout("mainRoot", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::MATCH_PARENT);
     int selectedTab = 0;
 
-    mGuiRoot->setBackgroundColor(new Color(255, 77, 77, 77));//мы фартовые ребята
+    mGuiRoot->setBackgroundColor(&COLORS::SURFACE);//мы фартовые ребята
     {
         //top padding
         mGuiRoot->addView(new SpacerView("#topPadding",0,8));
@@ -136,13 +136,13 @@ void scene1(Window* window) {
     {
         //container
         ViewPager* vp = new ViewPager("viewpager", ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::MATCH_PARENT);
-        vp->setBackgroundColor(new Color(255, 255, 0, 0));
+ 
         //tabs
         int paddingHorizontal = 8;
         LinearLayout* mTabsHeader = new LinearLayout("tabs", LinearLayoutOrientation::HORIZONTAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
-        SelectableButton* mControlBtn = new SelectableButton("managementTab", "Управление", 2u, Color(255, 11, 11, 11), Color(255, 44, 44, 44), Color(255, 33, 33, 33), ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
+        SelectableButton* mControlBtn = new SelectableButton("managementTab", "Управление", 2u, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
         SpacerView* spacerBtwTab = new SpacerView("#fff", 24, 0);
-        SelectableButton* mSettingsBtn = new SelectableButton("settingsTab", "Настройки", 2u, Color(255, 11, 11, 11), Color(255, 44, 44, 44), Color(255, 33, 33, 33), ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
+        SelectableButton* mSettingsBtn = new SelectableButton("settingsTab", "Настройки", 2u, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
 
         auto tabResolver = [](int* selectedTab, SelectableButton* mControlBtn, SelectableButton* mSettingsBtn,ViewPager* pager) {
             if (mControlBtn) mControlBtn->setSelected(*selectedTab == 0);
@@ -172,12 +172,14 @@ void scene1(Window* window) {
        
 
         LinearLayout* fragmentManagement = new LinearLayout("fragment1", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::MATCH_PARENT);
-        fragmentManagement->setBackgroundColor(new Color(255, 0, 255, 0));
+       // fragmentManagement->setBackgroundColor(new Color(255, 255, 0, 0));
         LinearLayout* fragmentSettigs = new LinearLayout("fragment2", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::MATCH_PARENT);
-        fragmentSettigs->setBackgroundColor(new Color(255, 255, 0, 255));
+       // fragmentSettigs->setBackgroundColor(new Color(255, 255, 255, 255));
 
         vp->addView(fragmentManagement);
         vp->addView(fragmentSettigs);
+        fragmentManagement->addView(new CheckBoxView("fff", 20, 20));
+        mGuiRoot->addView(new SpacerView("#underTabPadding", 0, 8));
         mGuiRoot->addView(vp);
     }
    

@@ -4,8 +4,8 @@
 class OutlinedButtonView : public BaseView {
 private:
 	const char* buttonText;
-	Color borderColor{BLACK};
-	Color borderHoverColor{WHITE};
+	Color borderColor{COLORS::SECONDARY_PRIMARY };
+	Color borderHoverColor{ COLORS::PRIMARY };
 	uintptr_t borderThickness{ 1u };
 	Vector2 textPositionOffset{ 0,0 };
 	Vector2 buttonPadding{ 32,16 };

@@ -1,8 +1,12 @@
 #include "BaseView.h"
 
-void BaseView::setBackgroundColor(Color* mColor)
+void BaseView::setBackgroundColor(const Color* mColor)
 {
-	this->mBackgroundColor = mColor;
+	if (mBackgroundColor != nullptr) {
+		delete mBackgroundColor;
+		mBackgroundColor = nullptr;
+	}
+	this->mBackgroundColor = new Color(*mColor);
 }
 
 void BaseView::requestLayout()
