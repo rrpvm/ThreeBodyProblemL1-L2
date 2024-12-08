@@ -16,6 +16,7 @@
 #include "UserInputController.hpp"
 #include "GuiState.hpp"
 #include "OutlinedButtonView.hpp"
+#include "SelectableButton.hpp"
 
 #define WND_NAME "Three body problem solve"
 ApplicationState appState = ApplicationState();
@@ -120,20 +121,48 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
 }
+
 void scene1(Window* window) {
     window->setBgColor(Color(255, 77, 77, 77));
     LinearLayout* mGuiRoot = new LinearLayout("mainRoot", LinearLayoutOrientation::VERTICAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::MATCH_PARENT);
+    int selectedTab = 0;
+
     mGuiRoot->setBackgroundColor(new Color(255, 77, 77, 77));//мы фартовые ребята
+    {
+        //top padding
+        mGuiRoot->addView(new SpacerView("#topPadding",0,8));
+    }
+   
+        //tabs
+        int paddingHorizontal = 8;
+        LinearLayout* mTabsHeader = new LinearLayout("tabs", LinearLayoutOrientation::HORIZONTAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
+        SelectableButton* mControlBtn = new SelectableButton("managementTab", "Управление", 2u, Color(255, 255, 255, 255), Color(255, 255, 0, 0), ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
+        SpacerView* spacerBtwTab = new SpacerView("#fff", 24, 0);
+        SelectableButton*  mSettingsBtn = new SelectableButton("settingsTab", "Настройки", 2u, Color(255, 255, 255, 255), Color(255, 255, 0, 0), ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
+       
+        auto tabResolver = [](int* selectedTab, SelectableButton* mControlBtn, SelectableButton* mSettingsBtn) {
+            if (mControlBtn) mControlBtn->setSelected(*selectedTab == 0);
+            if (mSettingsBtn) mSettingsBtn->setSelected(*selectedTab == 1);
+        };
 
-    LinearLayout* mTabsHeader = new LinearLayout("tabs", LinearLayoutOrientation::HORIZONTAL, ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
-    OutlinedButtonView* mControlBtn = new OutlinedButtonView("tab1", "Управление", 4u, Color(255, 255, 255, 255), Color(255, 255, 0, 0), ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
-    OutlinedButtonView* mSettingsBtn = new OutlinedButtonView("tab2", "Настройки", 4u, Color(255, 255, 255, 255), Color(255, 255, 0, 0), ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
-    OutlinedButtonView* mSettingsBtn2 = new OutlinedButtonView("tab23", "Third", 4u, Color(255, 255, 255, 255), Color(255, 255, 0, 0), ViewSizeSpec::MATCH_PARENT, ViewSizeSpec::WRAP_CONTENT);
+        mControlBtn->setOnClickListener(new OnClickListener([&selectedTab, mControlBtn, mSettingsBtn, tabResolver]() {
+            selectedTab = 0;
+            tabResolver(&selectedTab, mControlBtn, mSettingsBtn);
+        }));
 
-    mTabsHeader->addView(mControlBtn);
-    mTabsHeader->addView(mSettingsBtn);
-    mTabsHeader->addView(mSettingsBtn2);
-    mGuiRoot->addView(mTabsHeader);
+        mSettingsBtn->setOnClickListener(new OnClickListener([&selectedTab, mControlBtn, mSettingsBtn, tabResolver]() {
+            selectedTab = 1;
+            tabResolver(&selectedTab, mControlBtn, mSettingsBtn);
+        }));
+        mTabsHeader->addView(new SpacerView("#leftSpacerTab", paddingHorizontal, 0));
+        mTabsHeader->addView(mControlBtn);
+        mTabsHeader->addView(spacerBtwTab);
+        mTabsHeader->addView(mSettingsBtn);
+        mTabsHeader->addView(new SpacerView("#rightSpacerTab", paddingHorizontal, 0));
+        mGuiRoot->addView(mTabsHeader);
+    
+   
+  
     window->setView(mGuiRoot);
 }
 void onTBPCallback() {

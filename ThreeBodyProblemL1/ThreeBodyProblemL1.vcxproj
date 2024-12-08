@@ -140,6 +140,7 @@
     <ClCompile Include="OutlinedButtonView.cpp" />
     <ClCompile Include="ParentView.cpp" />
     <ClCompile Include="Renderable.cpp" />
+    <ClCompile Include="SelectableButton.cpp" />
     <ClCompile Include="SpacerView.cpp" />
     <ClCompile Include="SunBody.cpp" />
     <ClCompile Include="ThreeBodyProblemL1.cpp" />
@@ -162,10 +163,12 @@
     <ClInclude Include="LayoutParameter.hpp" />
     <ClInclude Include="LinearLayout.hpp" />
     <ClInclude Include="MouseEvent.hpp" />
+    <ClInclude Include="OnClickListener.hpp" />
     <ClInclude Include="OutlinedButtonView.hpp" />
     <ClInclude Include="ParentView.hpp" />
     <ClInclude Include="BoundRect.hpp" />
     <ClInclude Include="Renderable.h" />
+    <ClInclude Include="SelectableButton.hpp" />
     <ClInclude Include="SpacerView.hpp" />
     <ClInclude Include="SunBody.hpp" />
     <ClInclude Include="Universe.h" />

@@ -90,6 +90,9 @@
     <ClCompile Include="UserInputController.cpp">
       <Filter>Исходные файлы\gui</Filter>
     </ClCompile>
+    <ClCompile Include="SelectableButton.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Color.h">
@@ -171,6 +174,12 @@
       <Filter>Файлы заголовков\utils</Filter>
     </ClInclude>
     <ClInclude Include="OutlinedButtonView.hpp">
+      <Filter>Файлы заголовков\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectableButton.hpp">
+      <Filter>Файлы заголовков\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="OnClickListener.hpp">
       <Filter>Файлы заголовков\gui</Filter>
     </ClInclude>
   </ItemGroup>

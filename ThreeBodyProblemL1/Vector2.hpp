@@ -23,7 +23,7 @@ public:
 		this->x += sum.x;
 		this->y += sum.y;
 	}
-	Vector2 operator-(Vector2& sum) {
+	Vector2 operator-(const Vector2& sum) {
 		return Vector2(this->x - sum.x, this->y - sum.y);
 	}
 	void operator-=(Vector2& sum) {

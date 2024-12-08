@@ -26,7 +26,6 @@ void LinearLayout::dispatchMouseEvent(const MouseEvent& mouseEvent)
 }
 bool LinearLayout::onMouseEvent(const MouseEvent& mouseEvent)
 {
-	
 	return false;
 }
 void LinearLayout::draw(IRender* renderer)
@@ -166,7 +165,6 @@ void LinearLayout::onLayout()
 			if (dynamic_cast<ParentView*>(view)) {
 				view->onLayout();
 			}
-			tmpBound.left.x = 0;
 			tmpBound.left.y += view->measuredHeight;
 		}
 	}
@@ -184,7 +182,6 @@ void LinearLayout::onLayout()
 				view->onLayout();
 			}
 			tmpBound.left.x += view->measuredWidth;
-			tmpBound.left.y = 0;
 		}
 	}
 
